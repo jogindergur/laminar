@@ -100,61 +100,66 @@ class AppleLogoComposition extends StatelessWidget {
         // Starfield
         CustomPaint(painter: _StarfieldPainter(frame: frame)),
 
-        // Logo + tagline in a Column (they never overlap)
+        // Logo + tagline — FittedBox keeps content inside viewport at any size
         Center(
-          child: Opacity(
-            opacity: opacity,
-            child: Transform.scale(
-              scale: scale,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Logo — width:height = 814.1:1000
-                  SizedBox(
-                    width: 200,
-                    height: 246,
-                    child: CustomPaint(
-                      painter: _AppleLogoPainter(shimmerHue: shimmerHue, glowRadius: glowRadius, opacity: opacity),
-                    ),
-                  ),
-
-                  // Guaranteed gap — logo and text never touch
-                  const SizedBox(height: 44),
-
-                  // Tagline
-                  Transform.translate(
-                    offset: Offset(0, textSlide),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Think Different.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Helvetica Neue',
-                            fontFamilyFallback: const ['Helvetica', 'Arial', 'sans-serif'],
-                            color: Colors.white.withValues(alpha: 0.88),
-                            fontSize: 26,
-                            fontWeight: FontWeight.w300,
-                            letterSpacing: 4.2,
-                            height: 1.0,
-                          ),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Opacity(
+              opacity: opacity,
+              child: Transform.scale(
+                scale: scale,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Logo — width:height = 814.1:1000
+                      SizedBox(
+                        width: 200,
+                        height: 246,
+                        child: CustomPaint(
+                          painter: _AppleLogoPainter(shimmerHue: shimmerHue, glowRadius: glowRadius, opacity: opacity),
                         ),
-                        const SizedBox(height: 14),
-                        Text(
-                          'frame $frame / $total',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Helvetica Neue',
-                            fontFamilyFallback: const ['Helvetica', 'Arial', 'sans-serif'],
-                            color: Colors.white.withValues(alpha: 0.22),
-                            fontSize: 11,
-                            letterSpacing: 1.4,
-                          ),
+                      ),
+
+                      const SizedBox(height: 44),
+
+                      // Tagline
+                      Transform.translate(
+                        offset: Offset(0, textSlide),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Think Different.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Helvetica Neue',
+                                fontFamilyFallback: const ['Helvetica', 'Arial', 'sans-serif'],
+                                color: Colors.white.withValues(alpha: 0.88),
+                                fontSize: 26,
+                                fontWeight: FontWeight.w300,
+                                letterSpacing: 4.2,
+                                height: 1.0,
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            Text(
+                              'frame $frame / $total',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Helvetica Neue',
+                                fontFamilyFallback: const ['Helvetica', 'Arial', 'sans-serif'],
+                                color: Colors.white.withValues(alpha: 0.22),
+                                fontSize: 11,
+                                letterSpacing: 1.4,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

@@ -9,10 +9,11 @@ import '../compositions/starbucks_logo_composition.dart';
 import '../compositions/wave_composition.dart';
 import '../screens/gallery_screen.dart';
 
-/// The main showcase screen — demonstrates compositions embedded as regular
-/// Flutter widgets, with no player screen required.
+/// ShowcaseScreen — each composition is shown twice, side-by-side:
+///   LEFT  → bare widget (no player, no chrome)
+///   RIGHT → same widget wrapped in a player card (seek, play/pause, transport)
 ///
-/// Each [Composition] below is just a widget. It drives itself.
+/// Both sides share one [LaminarController], so they're always in sync.
 class ShowcaseScreen extends StatefulWidget {
   const ShowcaseScreen({super.key});
 
@@ -21,7 +22,6 @@ class ShowcaseScreen extends StatefulWidget {
 }
 
 class _ShowcaseScreenState extends State<ShowcaseScreen> {
-  // External controllers — you own them, just like AnimationController.
   late final LaminarController _heroCtrl;
   late final LaminarController _counterCtrl;
   late final LaminarController _waveCtrl;
@@ -69,7 +69,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
               child: const Icon(Icons.widgets_rounded, color: Colors.white, size: 14),
             ),
             const SizedBox(width: 10),
-            const Text('Laminar as Flutter Widgets'),
+            const Text('Without Player, working as standalone widget.'),
           ],
         ),
         actions: [
@@ -87,191 +87,99 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         children: [
-          // ── Section header ─────────────────────────────────────────────────
-          _SectionHeader(
-            label: 'Drop-in anywhere',
-            sub: 'Each Composition<T> is a regular widget. No player, no scaffold.',
-          ),
-          const SizedBox(height: 16),
+          // ── Column headers ─────────────────────────────────────────────────
+          _ColumnHeaders(),
+          const SizedBox(height: 20),
 
-          // ── Hero: full-width banner ────────────────────────────────────────
-          _CompositionCard(
-            title: 'Hero Banner',
-            subtitle: 'Full-width, 16:9, looping — inside a plain Card',
+          // ── Hero Banner ────────────────────────────────────────────────────
+          _DualRow(
+            label: 'Hero Banner',
+            sub: 'FadeTitleComposition · 16:9 · 90f @ 30fps',
             accent: const Color(0xFF6C63FF),
+            aspectRatio: 16 / 9,
             ctrl: _heroCtrl,
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Composition<void>(
-                id: 'hero-banner',
-                width: 1920,
-                height: 1080,
-                fps: 30,
-                durationInFrames: 90,
-                defaultProps: null,
-                serialize: (_) => {},
-                component: (ctx, _) => const FadeTitleComposition(),
-                controller: _heroCtrl,
-              ),
-            ),
+            compositionId: 'hero-banner',
+            width: 1920,
+            height: 1080,
+            child: const FadeTitleComposition(),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 28),
 
-          // ── Side-by-side smaller compositions ─────────────────────────────
-          _SectionHeader(
-            label: 'Compose alongside other widgets',
-            sub: 'Two compositions as peers in a Row — just like any widget.',
-          ),
-          const SizedBox(height: 16),
-
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: _CompositionCard(
-                  title: 'Counter',
-                  subtitle: 'LaminarController shared externally',
-                  accent: const Color(0xFF00C9A7),
-                  ctrl: _counterCtrl,
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Composition<void>(
-                      id: 'counter',
-                      width: 600,
-                      height: 600,
-                      fps: 30,
-                      durationInFrames: 120,
-                      defaultProps: null,
-                      serialize: (_) => {},
-                      component: (ctx, _) => const CounterComposition(),
-                      controller: _counterCtrl,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _CompositionCard(
-                  title: 'Wave',
-                  subtitle: 'autoPlay: true, no controller needed',
-                  accent: const Color(0xFFFF6584),
-                  ctrl: _waveCtrl,
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Composition<void>(
-                      id: 'wave',
-                      width: 600,
-                      height: 600,
-                      fps: 30,
-                      durationInFrames: 90,
-                      defaultProps: null,
-                      serialize: (_) => {},
-                      component: (ctx, _) => const WaveComposition(),
-                      controller: _waveCtrl,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          // ── Animated Counter ───────────────────────────────────────────────
+          _DualRow(
+            label: 'Animated Counter',
+            sub: 'CounterComposition · 1:1 · 120f @ 30fps',
+            accent: const Color(0xFF00C9A7),
+            aspectRatio: 1,
+            ctrl: _counterCtrl,
+            compositionId: 'counter',
+            width: 600,
+            height: 600,
+            child: const CounterComposition(),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 28),
 
-          // ── Series demo with explicit controller ───────────────────────────
-          _SectionHeader(
-            label: 'Series — temporal scene chaining',
-            sub: 'Composition<T> uses Series/Sequence internally. External controller drives all scenes.',
+          // ── Audio Wave ─────────────────────────────────────────────────────
+          _DualRow(
+            label: 'Audio Wave',
+            sub: 'WaveComposition · 1:1 · 90f @ 30fps',
+            accent: const Color(0xFFFF6584),
+            aspectRatio: 1,
+            ctrl: _waveCtrl,
+            compositionId: 'wave',
+            width: 600,
+            height: 600,
+            child: const WaveComposition(),
           ),
-          const SizedBox(height: 16),
 
-          _CompositionCard(
-            title: 'Series Demo',
-            subtitle: 'Intro → API List → Outro — driven by one LaminarController',
+          const SizedBox(height: 28),
+
+          // ── Series Demo ────────────────────────────────────────────────────
+          _DualRow(
+            label: 'Series Demo',
+            sub: 'SeriesDemoComposition · 16:9 · 150f @ 30fps',
             accent: const Color(0xFFFFBE0B),
+            aspectRatio: 16 / 9,
             ctrl: _seriesCtrl,
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Composition<void>(
-                id: 'series-demo',
-                width: 1920,
-                height: 1080,
-                fps: 30,
-                durationInFrames: 150,
-                defaultProps: null,
-                serialize: (_) => {},
-                component: (ctx, _) => const SeriesDemoComposition(),
-                controller: _seriesCtrl,
-              ),
-            ),
+            compositionId: 'series-demo',
+            width: 1920,
+            height: 1080,
+            child: const SeriesDemoComposition(),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 28),
 
-          // ── Apple Logo — 5 s looping showcase ─────────────────────────────
-          _SectionHeader(
-            label: '🍎 Apple Logo — 5 s',
-            sub: 'Faithful silhouette with bite • rainbow shimmer • pulsing glow',
-          ),
-          const SizedBox(height: 16),
-          _CompositionCard(
-            title: 'Apple Logo',
-            subtitle: 'Rainbow shimmer + glow pulse — 150 frames @ 30 fps',
+          // ── Apple Logo ─────────────────────────────────────────────────────
+          _DualRow(
+            label: '🍎 Apple Logo',
+            sub: 'AppleLogoComposition · 16:9 · 150f @ 30fps',
             accent: const Color(0xFFE0E0E0),
+            aspectRatio: 16 / 9,
             ctrl: _appleCtrl,
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Composition<void>(
-                id: 'apple-logo',
-                width: 1920,
-                height: 1080,
-                fps: 30,
-                durationInFrames: 150,
-                defaultProps: null,
-                serialize: (_) => {},
-                component: (ctx, _) => const AppleLogoComposition(),
-                controller: _appleCtrl,
-              ),
-            ),
+            compositionId: 'apple-logo',
+            width: 1920,
+            height: 1080,
+            child: const AppleLogoComposition(),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 28),
 
-          // ── Starbucks Logo — 5 s ──────────────────────────────────
-          _SectionHeader(label: '☕ Starbucks Logo — 5 s', sub: 'Exact SVG path • slow rotation • green glow pulse'),
-          const SizedBox(height: 16),
-          _CompositionCard(
-            title: 'Starbucks Logo',
-            subtitle: 'Official SVG paths — 150 frames @ 30 fps',
-            accent: const Color(0xFF1E3932),
+          // ── Starbucks Logo ─────────────────────────────────────────────────
+          _DualRow(
+            label: '☕ Starbucks Logo',
+            sub: 'StarbucksLogoComposition · 16:9 · 150f @ 30fps',
+            accent: const Color(0xFF00A862),
+            aspectRatio: 16 / 9,
             ctrl: _starbucksCtrl,
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Composition<void>(
-                id: 'starbucks-logo',
-                width: 1920,
-                height: 1080,
-                fps: 30,
-                durationInFrames: 150,
-                defaultProps: null,
-                serialize: (_) => {},
-                component: (ctx, _) => const StarbucksLogoComposition(),
-                controller: _starbucksCtrl,
-              ),
-            ),
+            compositionId: 'starbucks-logo',
+            width: 1920,
+            height: 1080,
+            child: const StarbucksLogoComposition(),
           ),
-
-          const SizedBox(height: 20),
-
-          // ── Mini-embed: composition inside a profile card ─────────────────
-          _SectionHeader(
-            label: 'Inside existing UI',
-            sub: 'A composition embedded inside a profile card — just a widget.',
-          ),
-          const SizedBox(height: 16),
-          _ProfileCardDemo(waveCtrl: _waveCtrl),
 
           const SizedBox(height: 40),
         ],
@@ -280,50 +188,186 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
   }
 }
 
-// ── Supporting widgets ────────────────────────────────────────────────────────
+// ── Column headers ─────────────────────────────────────────────────────────────
 
-class _SectionHeader extends StatelessWidget {
-  final String label;
-  final String sub;
-  const _SectionHeader({required this.label, required this.sub});
-
+class _ColumnHeaders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(
-          label,
-          style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700, letterSpacing: -0.4),
-        ),
-        const SizedBox(height: 3),
-        Text(sub, style: TextStyle(color: Colors.white.withOpacity(0.45), fontSize: 13)),
+        Expanded(child: _HeaderChip('Without Player', Colors.white24, Icons.block)),
+        const SizedBox(width: 14),
+        Expanded(child: _HeaderChip('With Player', const Color(0xFF6C63FF), Icons.play_circle_outline_rounded)),
       ],
     );
   }
 }
 
-/// A card wrapper that adds a title, subtitle, and playback micro-controls.
-class _CompositionCard extends StatefulWidget {
-  final String title;
-  final String subtitle;
+class _HeaderChip extends StatelessWidget {
+  final String label;
+  final Color color;
+  final IconData icon;
+  const _HeaderChip(this.label, this.color, this.icon);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 13, color: color),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Dual row ───────────────────────────────────────────────────────────────────
+
+/// Shows one composition in two columns — bare left, player card right.
+/// Both share [ctrl] so they stay perfectly in sync.
+class _DualRow extends StatelessWidget {
+  final String label;
+  final String sub;
   final Color accent;
+  final double aspectRatio;
   final LaminarController ctrl;
+  final String compositionId;
+  final int width;
+  final int height;
   final Widget child;
 
-  const _CompositionCard({
-    required this.title,
-    required this.subtitle,
+  const _DualRow({
+    required this.label,
+    required this.sub,
     required this.accent,
+    required this.aspectRatio,
     required this.ctrl,
+    required this.compositionId,
+    required this.width,
+    required this.height,
     required this.child,
   });
 
   @override
-  State<_CompositionCard> createState() => _CompositionCardState();
+  Widget build(BuildContext context) {
+    final comp = Composition<void>(
+      id: compositionId,
+      width: width,
+      height: height,
+      fps: 30,
+      durationInFrames: ctrl.durationInFrames,
+      defaultProps: null,
+      serialize: (_) => {},
+      component: (ctx, _) => child,
+      controller: ctrl,
+    );
+
+    // The "with-player" version uses a separate id to avoid key collisions
+    final compPlayer = Composition<void>(
+      id: '$compositionId-player',
+      width: width,
+      height: height,
+      fps: 30,
+      durationInFrames: ctrl.durationInFrames,
+      defaultProps: null,
+      serialize: (_) => {},
+      component: (ctx, _) => child,
+      controller: ctrl,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section label
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700, letterSpacing: -0.3),
+        ),
+        const SizedBox(height: 2),
+        Text(sub, style: const TextStyle(color: Colors.white38, fontSize: 11)),
+        const SizedBox(height: 10),
+
+        // Two-column layout
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // LEFT — bare widget, no chrome
+            Expanded(
+              child: _BarePane(aspectRatio: aspectRatio, composition: comp),
+            ),
+
+            const SizedBox(width: 14),
+
+            // RIGHT — player card with controls
+            Expanded(
+              child: _PlayerPane(accent: accent, aspectRatio: aspectRatio, ctrl: ctrl, composition: compPlayer),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
-class _CompositionCardState extends State<_CompositionCard> {
+// ── Bare pane (left) ──────────────────────────────────────────────────────────
+
+class _BarePane extends StatelessWidget {
+  final double aspectRatio;
+  final Widget composition;
+  const _BarePane({required this.aspectRatio, required this.composition});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: AspectRatio(aspectRatio: aspectRatio, child: composition),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.block, size: 10, color: Colors.white24),
+            const SizedBox(width: 5),
+            const Text(
+              'Without Player, working as standalone widget.',
+              style: TextStyle(color: Colors.white30, fontSize: 10, fontWeight: FontWeight.w500, letterSpacing: 0.4),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+// ── Player pane (right) ───────────────────────────────────────────────────────
+
+class _PlayerPane extends StatefulWidget {
+  final double aspectRatio;
+  final Color accent;
+  final LaminarController ctrl;
+  final Widget composition;
+  const _PlayerPane({required this.aspectRatio, required this.accent, required this.ctrl, required this.composition});
+
+  @override
+  State<_PlayerPane> createState() => _PlayerPaneState();
+}
+
+class _PlayerPaneState extends State<_PlayerPane> {
   @override
   void initState() {
     super.initState();
@@ -341,81 +385,63 @@ class _CompositionCardState extends State<_CompositionCard> {
   @override
   Widget build(BuildContext context) {
     final ctrl = widget.ctrl;
+    final accent = widget.accent;
+
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF17172A),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: accent.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Composition viewport
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-            child: widget.child,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(11)),
+            child: AspectRatio(aspectRatio: widget.aspectRatio, child: widget.composition),
           ),
-          // Control bar
+
+          // Controls
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title + status
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.title,
-                            style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700),
-                          ),
-                          Text(
-                            widget.subtitle,
-                            style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 11),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Status badge
-                    _StatusBadge(status: ctrl.status, accent: widget.accent),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                // Progress bar (tap-to-seek)
-                _SeekBar(ctrl: ctrl, accent: widget.accent),
+                // Seek bar
+                _SeekBar(ctrl: ctrl, accent: accent),
                 const SizedBox(height: 8),
+
                 // Transport row
                 Row(
                   children: [
-                    _TransportBtn(icon: Icons.skip_previous_rounded, onTap: ctrl.stop, color: Colors.white30),
-                    const SizedBox(width: 6),
-                    _TransportBtn(icon: Icons.navigate_before_rounded, onTap: ctrl.stepBack, color: Colors.white30),
-                    const SizedBox(width: 6),
+                    // Rewind to start
+                    _TBtn(icon: Icons.skip_previous_rounded, onTap: ctrl.stop, color: Colors.white30),
+                    const SizedBox(width: 4),
+                    // Step back
+                    _TBtn(icon: Icons.navigate_before_rounded, onTap: ctrl.stepBack, color: Colors.white30),
+                    const SizedBox(width: 4),
                     // Play / Pause
                     GestureDetector(
                       onTap: ctrl.toggle,
                       child: Container(
-                        width: 34,
-                        height: 34,
-                        decoration: BoxDecoration(color: widget.accent, borderRadius: BorderRadius.circular(17)),
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(color: accent, borderRadius: BorderRadius.circular(15)),
                         child: Icon(
                           ctrl.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
                           color: Colors.white,
-                          size: 18,
+                          size: 16,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 6),
-                    _TransportBtn(icon: Icons.navigate_next_rounded, onTap: ctrl.stepForward, color: Colors.white30),
+                    const SizedBox(width: 4),
+                    // Step forward
+                    _TBtn(icon: Icons.navigate_next_rounded, onTap: ctrl.stepForward, color: Colors.white30),
                     const Spacer(),
                     // Frame counter
                     Text(
-                      'F${ctrl.frame.toString().padLeft(4, '0')} / ${ctrl.durationInFrames}',
-                      style: const TextStyle(color: Colors.white38, fontSize: 11, fontFamily: 'monospace'),
+                      'F${ctrl.frame.toString().padLeft(3, '0')}/${ctrl.durationInFrames}',
+                      style: const TextStyle(color: Colors.white38, fontSize: 10, fontFamily: 'monospace'),
                     ),
                   ],
                 ),
@@ -428,33 +454,7 @@ class _CompositionCardState extends State<_CompositionCard> {
   }
 }
 
-class _StatusBadge extends StatelessWidget {
-  final PlaybackStatus status;
-  final Color accent;
-  const _StatusBadge({required this.status, required this.accent});
-
-  @override
-  Widget build(BuildContext context) {
-    final (label, color) = switch (status) {
-      PlaybackStatus.playing => ('● PLAYING', accent),
-      PlaybackStatus.paused => ('⏸ PAUSED', Colors.white38),
-      PlaybackStatus.finished => ('■ DONE', Colors.white38),
-      PlaybackStatus.idle => ('○ IDLE', Colors.white24),
-    };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.35)),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(color: color, fontSize: 9.5, fontWeight: FontWeight.w700, letterSpacing: 0.8),
-      ),
-    );
-  }
-}
+// ── Micro-widgets ─────────────────────────────────────────────────────────────
 
 class _SeekBar extends StatelessWidget {
   final LaminarController ctrl;
@@ -464,7 +464,7 @@ class _SeekBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (ctx, constraints) {
+      builder: (_, constraints) {
         return GestureDetector(
           onTapDown: (d) {
             final frac = d.localPosition.dx / constraints.maxWidth;
@@ -475,7 +475,7 @@ class _SeekBar extends StatelessWidget {
             ctrl.seekTo((frac * (ctrl.durationInFrames - 1)).round().clamp(0, ctrl.durationInFrames - 1));
           },
           child: Container(
-            height: 4,
+            height: 3,
             decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(2)),
             child: FractionallySizedBox(
               widthFactor: ctrl.progress,
@@ -491,111 +491,21 @@ class _SeekBar extends StatelessWidget {
   }
 }
 
-class _TransportBtn extends StatelessWidget {
+class _TBtn extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
   final Color color;
-  const _TransportBtn({required this.icon, required this.onTap, required this.color});
+  const _TBtn({required this.icon, required this.onTap, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(color: Colors.white.withOpacity(0.07), borderRadius: BorderRadius.circular(15)),
-        child: Icon(icon, color: color, size: 16),
-      ),
-    );
-  }
-}
-
-/// A mock profile card that contains a live composition as its avatar.
-class _ProfileCardDemo extends StatelessWidget {
-  final LaminarController waveCtrl;
-  const _ProfileCardDemo({required this.waveCtrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF17172A),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Row(
-        children: [
-          // Composition as the "avatar"
-          ClipRRect(
-            borderRadius: BorderRadius.circular(50),
-            child: SizedBox(
-              width: 80,
-              height: 80,
-              child: Composition<void>(
-                id: 'avatar-wave',
-                width: 400,
-                height: 400,
-                fps: 30,
-                durationInFrames: 90,
-                defaultProps: null,
-                serialize: (_) => {},
-                component: (ctx, _) => const WaveComposition(),
-                // Share a controller — same playback state as the wave card above
-                controller: waveCtrl,
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          // Normal Flutter widgets alongside
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Laminar Widget',
-                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Composition embedded inside a Row, no player needed.',
-                  style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 13, height: 1.4),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFF6584).withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFFF6584).withOpacity(0.4)),
-                      ),
-                      child: const Text(
-                        '✦ flutter widget',
-                        style: TextStyle(color: Color(0xFFFF6584), fontSize: 11, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF6C63FF).withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFF6C63FF).withOpacity(0.4)),
-                      ),
-                      child: const Text(
-                        '✦ self-animating',
-                        style: TextStyle(color: Color(0xFF6C63FF), fontSize: 11, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+        width: 26,
+        height: 26,
+        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.07), borderRadius: BorderRadius.circular(13)),
+        child: Icon(icon, color: color, size: 14),
       ),
     );
   }

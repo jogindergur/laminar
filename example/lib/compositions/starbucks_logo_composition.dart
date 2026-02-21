@@ -106,60 +106,66 @@ class StarbucksLogoComposition extends StatelessWidget {
           ),
         ),
 
-        // Logo centred
+        // Logo centred — FittedBox prevents overflow at small viewport sizes
         Center(
-          child: Opacity(
-            opacity: opacity,
-            child: Transform.scale(
-              scale: scale,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Logo canvas — square, same as the SVG viewBox aspect (237.4:240.3 ≈ 1:1)
-                  SizedBox(
-                    width: 260,
-                    height: 263,
-                    child: CustomPaint(
-                      painter: _StarbucksLogoPainter(rotation: rotation, glowRadius: glowRadius, opacity: opacity),
-                    ),
-                  ),
-
-                  // Gap — logo and text never touch
-                  const SizedBox(height: 36),
-
-                  // Tagline
-                  Transform.translate(
-                    offset: Offset(0, textSlide),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Starbucks Coffee',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Helvetica Neue',
-                            fontFamilyFallback: const ['Helvetica', 'Arial'],
-                            color: _kGreen.withValues(alpha: 0.90),
-                            fontSize: 22,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 3.0,
-                          ),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Opacity(
+              opacity: opacity,
+              child: Transform.scale(
+                scale: scale,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Logo canvas — square, same as the SVG viewBox aspect (237.4:240.3 ≈ 1:1)
+                      SizedBox(
+                        width: 260,
+                        height: 263,
+                        child: CustomPaint(
+                          painter: _StarbucksLogoPainter(rotation: rotation, glowRadius: glowRadius, opacity: opacity),
                         ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'frame $frame / $total',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Helvetica Neue',
-                            fontFamilyFallback: const ['Helvetica', 'Arial'],
-                            color: _kGreen.withValues(alpha: 0.30),
-                            fontSize: 11,
-                            letterSpacing: 1.4,
-                          ),
+                      ),
+
+                      // Gap — logo and text never touch
+                      const SizedBox(height: 36),
+
+                      // Tagline
+                      Transform.translate(
+                        offset: Offset(0, textSlide),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Starbucks Coffee',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Helvetica Neue',
+                                fontFamilyFallback: const ['Helvetica', 'Arial'],
+                                color: _kGreen.withValues(alpha: 0.90),
+                                fontSize: 22,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 3.0,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              'frame $frame / $total',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Helvetica Neue',
+                                fontFamilyFallback: const ['Helvetica', 'Arial'],
+                                color: _kGreen.withValues(alpha: 0.30),
+                                fontSize: 11,
+                                letterSpacing: 1.4,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
