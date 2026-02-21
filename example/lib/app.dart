@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/gallery_screen.dart';
+
+import 'screens/showcase_screen.dart';
 
 class LaminarExampleApp extends StatelessWidget {
   const LaminarExampleApp({super.key});
@@ -7,13 +8,10 @@ class LaminarExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Laminar — Demo Gallery',
+      title: 'Laminar — Widget Showcase',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF6C63FF),
-          brightness: Brightness.dark,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6C63FF), brightness: Brightness.dark),
         useMaterial3: true,
         fontFamily: 'Roboto',
         scaffoldBackgroundColor: const Color(0xFF0D0D12),
@@ -30,7 +28,7 @@ class LaminarExampleApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const GalleryScreen(),
+      home: const ShowcaseScreen(),
     );
   }
 }

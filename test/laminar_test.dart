@@ -1,18 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:laminar/laminar.dart';
 
 void main() {
   // ── VideoConfig ────────────────────────────────────────────────────────────
   group('VideoConfig', () {
     test('creates with required fields', () {
-      const config = VideoConfig(
-        id: 'test',
-        width: 1920,
-        height: 1080,
-        fps: 30,
-        durationInFrames: 300,
-      );
+      const config = VideoConfig(id: 'test', width: 1920, height: 1080, fps: 30, durationInFrames: 300);
       expect(config.id, 'test');
       expect(config.width, 1920);
       expect(config.height, 1080);
@@ -21,35 +14,17 @@ void main() {
     });
 
     test('computes durationInSeconds correctly', () {
-      const config = VideoConfig(
-        id: 'test',
-        width: 1920,
-        height: 1080,
-        fps: 30,
-        durationInFrames: 300,
-      );
+      const config = VideoConfig(id: 'test', width: 1920, height: 1080, fps: 30, durationInFrames: 300);
       expect(config.durationInSeconds, closeTo(10.0, 0.001));
     });
 
     test('computes aspectRatio correctly', () {
-      const config = VideoConfig(
-        id: 'test',
-        width: 1920,
-        height: 1080,
-        fps: 30,
-        durationInFrames: 300,
-      );
+      const config = VideoConfig(id: 'test', width: 1920, height: 1080, fps: 30, durationInFrames: 300);
       expect(config.aspectRatio, closeTo(16 / 9, 0.001));
     });
 
     test('copyWith overrides fields', () {
-      const base = VideoConfig(
-        id: 'base',
-        width: 1280,
-        height: 720,
-        fps: 24,
-        durationInFrames: 120,
-      );
+      const base = VideoConfig(id: 'base', width: 1280, height: 720, fps: 24, durationInFrames: 120);
       final copy = base.copyWith(id: 'copy', fps: 60);
       expect(copy.id, 'copy');
       expect(copy.fps, 60);
@@ -116,22 +91,12 @@ void main() {
     });
 
     test('clamp extrapolation on right', () {
-      final result = interpolate(
-        60,
-        [0, 30],
-        [0.0, 1.0],
-        extrapolateRight: Extrapolate.clamp,
-      );
+      final result = interpolate(60, [0, 30], [0.0, 1.0], extrapolateRight: Extrapolate.clamp);
       expect(result, closeTo(1.0, 0.001));
     });
 
     test('clamp extrapolation on left', () {
-      final result = interpolate(
-        -10,
-        [0, 30],
-        [0.0, 1.0],
-        extrapolateLeft: Extrapolate.clamp,
-      );
+      final result = interpolate(-10, [0, 30], [0.0, 1.0], extrapolateLeft: Extrapolate.clamp);
       expect(result, closeTo(0.0, 0.001));
     });
 
@@ -142,8 +107,7 @@ void main() {
 
     test('multi-segment input range', () {
       // 0→0 at frame 0, 0→1 in frames 0-30, 1→0 in frames 30-60
-      final result =
-          interpolate(45, [0, 30, 60], [0.0, 1.0, 0.0]);
+      final result = interpolate(45, [0, 30, 60], [0.0, 1.0, 0.0]);
       expect(result, closeTo(0.5, 0.001));
     });
   });
@@ -181,23 +145,15 @@ void main() {
         LaminarEasing.easeInCubic,
         LaminarEasing.easeOutCubic,
       ]) {
-        expect(fn(0.0), closeTo(0.0, 0.001),
-            reason: 'f(0) must equal 0');
-        expect(fn(1.0), closeTo(1.0, 0.001),
-            reason: 'f(1) must equal 1');
+        expect(fn(0.0), closeTo(0.0, 0.001), reason: 'f(0) must equal 0');
+        expect(fn(1.0), closeTo(1.0, 0.001), reason: 'f(1) must equal 1');
       }
     });
   });
 
   // ── RenderMediaOptions ────────────────────────────────────────────────────
   group('RenderMediaOptions', () {
-    const baseConfig = VideoConfig(
-      id: 'opts-test',
-      width: 1280,
-      height: 720,
-      fps: 30,
-      durationInFrames: 60,
-    );
+    const baseConfig = VideoConfig(id: 'opts-test', width: 1280, height: 720, fps: 30, durationInFrames: 60);
 
     test('effectiveFrameRange covers full composition by default', () {
       final opts = RenderMediaOptions(composition: baseConfig);
@@ -207,16 +163,140 @@ void main() {
     });
 
     test('effectiveFrameRange respects explicit frameRange', () {
-      final opts = RenderMediaOptions(
-        composition: baseConfig,
-        frameRange: const FrameRange(start: 10, end: 29),
-      );
+      final opts = RenderMediaOptions(composition: baseConfig, frameRange: const FrameRange(start: 10, end: 29));
       expect(opts.effectiveFrameRange.length, 20);
     });
 
     test('default codec is h264', () {
       final opts = RenderMediaOptions(composition: baseConfig);
       expect(opts.codec, Codec.h264);
+    });
+  });
+
+  // ── LaminarController ─────────────────────────────────────────────────────
+  group('LaminarController', () {
+    test('initial state is idle at frame 0', () {
+      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      expect(ctrl.frame, 0);
+      expect(ctrl.status, PlaybackStatus.idle);
+      expect(ctrl.isPlaying, false);
+      ctrl.dispose();
+    });
+
+    test('play() sets status to playing', () {
+      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      ctrl.play();
+      expect(ctrl.isPlaying, true);
+      expect(ctrl.status, PlaybackStatus.playing);
+      ctrl.dispose();
+    });
+
+    test('pause() sets status to paused', () {
+      final ctrl = LaminarController(durationInFrames: 60, fps: 30)..play();
+      ctrl.pause();
+      expect(ctrl.isPaused, true);
+      expect(ctrl.status, PlaybackStatus.paused);
+      ctrl.dispose();
+    });
+
+    test('toggle() switches between playing and paused', () {
+      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      ctrl.toggle(); // idle → playing
+      expect(ctrl.isPlaying, true);
+      ctrl.toggle(); // playing → paused
+      expect(ctrl.isPaused, true);
+      ctrl.dispose();
+    });
+
+    test('stop() resets to frame 0 and idle', () {
+      final ctrl = LaminarController(durationInFrames: 60, fps: 30)..play();
+      ctrl.seekTo(30);
+      ctrl.stop();
+      expect(ctrl.frame, 0);
+      expect(ctrl.status, PlaybackStatus.idle);
+      ctrl.dispose();
+    });
+
+    test('seekTo clamps to valid range', () {
+      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      ctrl.seekTo(200);
+      expect(ctrl.frame, 59);
+      ctrl.seekTo(-10);
+      expect(ctrl.frame, 0);
+      ctrl.dispose();
+    });
+
+    test('stepForward increments frame', () {
+      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      ctrl.stepForward();
+      expect(ctrl.frame, 1);
+      ctrl.dispose();
+    });
+
+    test('stepBack decrements frame (clamped at 0)', () {
+      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      ctrl.stepBack(); // already at 0 — clamps
+      expect(ctrl.frame, 0);
+      ctrl.seekTo(10);
+      ctrl.stepBack();
+      expect(ctrl.frame, 9);
+      ctrl.dispose();
+    });
+
+    test('advance() increments frame while playing', () {
+      final ctrl = LaminarController(durationInFrames: 60, fps: 30)..play();
+      expect(ctrl.advance(), true);
+      expect(ctrl.frame, 1);
+      ctrl.dispose();
+    });
+
+    test('advance() at last frame sets status to finished (no loop)', () {
+      final ctrl = LaminarController(durationInFrames: 3, fps: 30)..play();
+      ctrl.advance(); // → frame 1
+      ctrl.advance(); // → frame 2
+      ctrl.advance(); // → finished (last frame = 2)
+      expect(ctrl.status, PlaybackStatus.finished);
+      expect(ctrl.isFinished, true);
+      ctrl.dispose();
+    });
+
+    test('advance() loops when loop=true', () {
+      final ctrl = LaminarController(durationInFrames: 3, fps: 30, loop: true)..play();
+      ctrl.advance(); // 1
+      ctrl.advance(); // 2
+      ctrl.advance(); // → wraps to 0
+      expect(ctrl.frame, 0);
+      expect(ctrl.isPlaying, true);
+      ctrl.dispose();
+    });
+
+    test('progress is 0.0 at frame 0 and 1.0 at last frame', () {
+      final ctrl = LaminarController(durationInFrames: 10, fps: 30);
+      expect(ctrl.progress, closeTo(0.0, 0.001));
+      ctrl.seekTo(9);
+      expect(ctrl.progress, closeTo(1.0, 0.001));
+      ctrl.dispose();
+    });
+
+    test('notifies listeners on state changes', () {
+      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      int notifyCount = 0;
+      ctrl.addListener(() => notifyCount++);
+      ctrl.play();
+      ctrl.seekTo(10);
+      ctrl.pause();
+      ctrl.stop();
+      expect(notifyCount, 4);
+      ctrl.dispose();
+    });
+
+    test('play() is no-op when already playing', () {
+      final ctrl = LaminarController(durationInFrames: 60, fps: 30)..play();
+      int count = 0;
+      ctrl.addListener(() => count++);
+      ctrl.play(); // should not notify
+      expect(count, 0);
+      ctrl.dispose();
     });
   });
 }

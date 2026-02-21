@@ -92,7 +92,6 @@ class _WavePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final cx = size.width / 2;
     final cy = size.height / 2;
     final t = frame / totalFrames;
 
