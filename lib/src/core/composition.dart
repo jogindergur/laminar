@@ -1,39 +1,61 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 import '../models/video_config.dart';
 import 'composition_provider.dart';
+import 'laminar_controller.dart';
 
-/// A widget that registers a named composition (scene) in the Laminar render
-/// tree.
+/// A self-animating Flutter widget that represents a named video composition.
 ///
-/// [Composition] is the top-level entry point for defining a renderable scene.
-/// It wraps its [child] widget with a [CompositionProvider] so that all
-/// descendants can access the active [VideoConfig] via [useVideoConfig].
+/// **Laminar compositions are regular Flutter widgets.** You can embed them
+/// directly inside any layout — [Column], [Stack], [Card], [SizedBox], etc. —
+/// without any player scaffolding.
 ///
 /// ```dart
-/// Composition<MyProps>(
-///   id: 'intro',
-///   width: 1920,
-///   height: 1080,
-///   fps: 30,
-///   durationInFrames: 150,
-///   defaultProps: MyProps(title: 'Hello, Laminar!'),
-///   serialize: (p) => p.toJson(),
-///   component: (context, props) => MyScene(props: props),
+/// // Drop-in anywhere:
+/// SizedBox(
+///   width: 400,
+///   height: 225,
+///   child: Composition<void>(
+///     id: 'hero',
+///     width: 1920, height: 1080, fps: 30,
+///     durationInFrames: 90,
+///     defaultProps: null,
+///     serialize: (_) => {},
+///     component: (ctx, _) => const MyHeroScene(),
+///     autoPlay: true,
+///   ),
 /// )
 /// ```
 ///
-/// The generic type [T] represents the props type for this composition. Pass
-/// a typed props object and a [serialize] function so the renderer can
-/// round-trip props through JSON.
-class Composition<T> extends StatelessWidget {
+/// ### Controller
+/// Pass a [LaminarController] to control playback externally (play, pause,
+/// seek, loop). When no controller is passed, Laminar creates and owns one
+/// internally; set [autoPlay] to `true` to start it automatically.
+///
+/// ```dart
+/// // Controlled externally:
+/// final ctrl = LaminarController(durationInFrames: 90, fps: 30);
+/// // … in build:
+/// Composition<MyProps>(controller: ctrl, …)
+/// ```
+///
+/// ### Sizing
+/// [Composition] fills its parent by default. Wrap it in a [SizedBox] or
+/// [AspectRatio] to constrain it — just like any other widget.
+class Composition<T> extends StatefulWidget {
+  // ── Identity ──────────────────────────────────────────────────────────────
+
   /// Unique human-readable identifier for this composition.
   final String id;
 
-  /// Output width in pixels.
+  // ── Render settings ───────────────────────────────────────────────────────
+
+  /// Logical output width (used by the render pipeline and [VideoConfig]).
   final int width;
 
-  /// Output height in pixels.
+  /// Logical output height.
   final int height;
 
   /// Frames per second.
@@ -42,18 +64,38 @@ class Composition<T> extends StatelessWidget {
   /// Total number of frames.
   final int durationInFrames;
 
-  /// Default props for this composition.
+  // ── Props ─────────────────────────────────────────────────────────────────
+
+  /// Default props passed to [component].
   final T defaultProps;
 
-  /// Converts [defaultProps] to a JSON-compatible map.
-  ///
-  /// Since Dart lacks Zod-style runtime schema introspection, callers must
-  /// provide an explicit serializer.
+  /// Converts [defaultProps] to a JSON-compatible map (required because Dart
+  /// lacks Zod-style runtime schemas).
   final Map<String, dynamic> Function(T props) serialize;
 
-  /// Builder function that receives [BuildContext] and the resolved [T] props
-  /// and returns the root widget of this composition.
+  // ── Widget factory ────────────────────────────────────────────────────────
+
+  /// The root widget of this composition. Receives [BuildContext] and the
+  /// resolved [T] props. Sub-widgets access the current frame via
+  /// [useCurrentFrame(context)] and metadata via [useVideoConfig(context)].
   final Widget Function(BuildContext context, T props) component;
+
+  // ── Playback ──────────────────────────────────────────────────────────────
+
+  /// Optional external controller. When `null`, an internal controller is
+  /// created and owned by this widget.
+  final LaminarController? controller;
+
+  /// Whether to start playback immediately on first build.
+  ///
+  /// Only applies to the *internal* controller (ignored when [controller] is
+  /// supplied — the external controller manages its own state).
+  final bool autoPlay;
+
+  /// Whether to loop playback when the last frame is reached.
+  ///
+  /// Only applies to the *internal* controller.
+  final bool loop;
 
   const Composition({
     super.key,
@@ -65,25 +107,110 @@ class Composition<T> extends StatelessWidget {
     required this.defaultProps,
     required this.serialize,
     required this.component,
+    this.controller,
+    this.autoPlay = false,
+    this.loop = false,
   });
+
+  @override
+  State<Composition<T>> createState() => _CompositionState<T>();
+}
+
+class _CompositionState<T> extends State<Composition<T>> {
+  late LaminarController _ctrl;
+  bool _ownsController = false;
+  Timer? _ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    _attachController();
+  }
+
+  @override
+  void didUpdateWidget(Composition<T> old) {
+    super.didUpdateWidget(old);
+    // If the external controller reference changed, re-attach.
+    if (old.controller != widget.controller) {
+      _detachController();
+      _attachController();
+    }
+  }
+
+  // ── Controller lifecycle ──────────────────────────────────────────────────
+
+  void _attachController() {
+    if (widget.controller != null) {
+      _ctrl = widget.controller!;
+      _ownsController = false;
+    } else {
+      _ctrl = LaminarController(durationInFrames: widget.durationInFrames, fps: widget.fps, loop: widget.loop);
+      _ownsController = true;
+      if (widget.autoPlay) _ctrl.play();
+    }
+    _ctrl.addListener(_onControllerChanged);
+    _startTicker();
+  }
+
+  void _detachController() {
+    _stopTicker();
+    _ctrl.removeListener(_onControllerChanged);
+    if (_ownsController) _ctrl.dispose();
+  }
+
+  void _onControllerChanged() {
+    // Mirror controller state to ticker.
+    if (_ctrl.isPlaying) {
+      _startTicker();
+    } else {
+      _stopTicker();
+    }
+    if (mounted) setState(() {});
+  }
+
+  // ── Frame ticker ─────────────────────────────────────────────────────────
+
+  void _startTicker() {
+    if (_ticker != null) return; // already running
+    final interval = Duration(microseconds: (1000000 / widget.fps).round());
+    _ticker = Timer.periodic(interval, (_) {
+      if (!_ctrl.isPlaying) {
+        _stopTicker();
+        return;
+      }
+      _ctrl.advance();
+      if (mounted) setState(() {});
+    });
+  }
+
+  void _stopTicker() {
+    _ticker?.cancel();
+    _ticker = null;
+  }
+
+  @override
+  void dispose() {
+    _detachController();
+    super.dispose();
+  }
+
+  // ── Build ─────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
     final config = VideoConfig(
-      id: id,
-      width: width,
-      height: height,
-      fps: fps,
-      durationInFrames: durationInFrames,
-      defaultProps: serialize(defaultProps),
+      id: widget.id,
+      width: widget.width,
+      height: widget.height,
+      fps: widget.fps,
+      durationInFrames: widget.durationInFrames,
+      defaultProps: widget.serialize(widget.defaultProps),
     );
 
     return CompositionProvider(
       config: config,
-      frame: 0,
-      child: Builder(
-        builder: (ctx) => component(ctx, defaultProps),
-      ),
+      frame: _ctrl.frame,
+      child: Builder(builder: (ctx) => widget.component(ctx, widget.defaultProps)),
     );
   }
 }
