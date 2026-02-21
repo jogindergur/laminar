@@ -1,0 +1,20 @@
+name: laminar
+description: "A platform-independent Flutter library for programmatic video composition and rendering. Inspired by Remotion, built for the Dart/Flutter ecosystem."
+version: 0.1.0
+homepage: https://github.com/laminar-dart/laminar
+
+environment:
+  sdk: ^3.8.1
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  # Platform-independent library — no assets or fonts declared here.
