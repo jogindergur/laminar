@@ -79,8 +79,14 @@ class LaminarController extends ChangeNotifier {
   // ── Commands ─────────────────────────────────────────────────────────────
 
   /// Starts playback from the current frame. No-op if already playing.
+  ///
+  /// If the composition has [finished], playback restarts from frame 0.
   void play() {
     if (_status == PlaybackStatus.playing) return;
+    // If we finished, rewind so the very first advance() tick isn't a no-op.
+    if (_status == PlaybackStatus.finished) {
+      _frame = 0;
+    }
     _status = PlaybackStatus.playing;
     notifyListeners();
   }
