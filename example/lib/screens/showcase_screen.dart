@@ -7,6 +7,7 @@ import '../compositions/fade_title_composition.dart';
 import '../compositions/olympic_logo_composition.dart';
 import '../compositions/series_demo_composition.dart';
 import '../compositions/starbucks_logo_composition.dart';
+import '../compositions/trend_chart_composition.dart';
 import '../compositions/wave_composition.dart';
 import '../screens/gallery_screen.dart';
 
@@ -30,6 +31,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
   late final LaminarController _appleCtrl;
   late final LaminarController _starbucksCtrl;
   late final LaminarController _olympicCtrl;
+  late final LaminarController _trendCtrl;
 
   @override
   void initState() {
@@ -41,6 +43,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
     _appleCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
     _starbucksCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
     _olympicCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
+    _trendCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
   }
 
   @override
@@ -52,6 +55,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
     _appleCtrl.dispose();
     _starbucksCtrl.dispose();
     _olympicCtrl.dispose();
+    _trendCtrl.dispose();
     super.dispose();
   }
 
@@ -196,6 +200,21 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             width: 1920,
             height: 1080,
             child: const OlympicLogoComposition(),
+          ),
+
+          const SizedBox(height: 28),
+
+          // ── Trend Line Chart ───────────────────────────────────────────────
+          _DualRow(
+            label: '📈 Trend Line Chart',
+            sub: 'TrendChartComposition · 16:9 · 150f @ 30fps — multi-series animated chart',
+            accent: const Color(0xFF6C63FF),
+            aspectRatio: 16 / 9,
+            ctrl: _trendCtrl,
+            compositionId: 'trend-chart',
+            width: 1920,
+            height: 1080,
+            child: const TrendChartComposition(),
           ),
 
           const SizedBox(height: 40),

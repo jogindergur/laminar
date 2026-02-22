@@ -6,6 +6,7 @@ import '../compositions/fade_title_composition.dart';
 import '../compositions/olympic_logo_composition.dart';
 import '../compositions/series_demo_composition.dart';
 import '../compositions/starbucks_logo_composition.dart';
+import '../compositions/trend_chart_composition.dart';
 import '../compositions/wave_composition.dart';
 import 'player_screen.dart';
 
@@ -103,6 +104,17 @@ class GalleryScreen extends StatelessWidget {
       icon: Icons.sports_gymnastics,
       accent: const Color(0xFF0085C7),
       composition: const OlympicLogoComposition(),
+      durationInFrames: 150,
+      fps: 30,
+    ),
+    CompositionEntry(
+      id: 'trend-chart',
+      title: '📈 Trend Line Chart',
+      description:
+          'Multi-series animated chart that draws itself left-to-right with smooth bezier curves, area fills, and pulsing leading dots.',
+      icon: Icons.show_chart,
+      accent: const Color(0xFF6C63FF),
+      composition: const TrendChartComposition(),
       durationInFrames: 150,
       fps: 30,
     ),
