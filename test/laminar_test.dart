@@ -176,7 +176,7 @@ void main() {
   // ── LaminarController ─────────────────────────────────────────────────────
   group('LaminarController', () {
     test('initial state is idle at frame 0', () {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      final ctrl = LaminarController()..attach(durationInFrames: 60);
       expect(ctrl.frame, 0);
       expect(ctrl.status, PlaybackStatus.idle);
       expect(ctrl.isPlaying, false);
@@ -184,7 +184,7 @@ void main() {
     });
 
     test('play() sets status to playing', () {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      final ctrl = LaminarController()..attach(durationInFrames: 60);
       ctrl.play();
       expect(ctrl.isPlaying, true);
       expect(ctrl.status, PlaybackStatus.playing);
@@ -192,7 +192,9 @@ void main() {
     });
 
     test('pause() sets status to paused', () {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30)..play();
+      final ctrl = LaminarController()
+        ..attach(durationInFrames: 60)
+        ..play();
       ctrl.pause();
       expect(ctrl.isPaused, true);
       expect(ctrl.status, PlaybackStatus.paused);
@@ -200,7 +202,7 @@ void main() {
     });
 
     test('toggle() switches between playing and paused', () {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      final ctrl = LaminarController()..attach(durationInFrames: 60);
       ctrl.toggle(); // idle → playing
       expect(ctrl.isPlaying, true);
       ctrl.toggle(); // playing → paused
@@ -209,7 +211,9 @@ void main() {
     });
 
     test('stop() resets to frame 0 and idle', () {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30)..play();
+      final ctrl = LaminarController()
+        ..attach(durationInFrames: 60)
+        ..play();
       ctrl.seekTo(30);
       ctrl.stop();
       expect(ctrl.frame, 0);
@@ -218,7 +222,7 @@ void main() {
     });
 
     test('seekTo clamps to valid range', () {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      final ctrl = LaminarController()..attach(durationInFrames: 60);
       ctrl.seekTo(200);
       expect(ctrl.frame, 59);
       ctrl.seekTo(-10);
@@ -227,14 +231,14 @@ void main() {
     });
 
     test('stepForward increments frame', () {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      final ctrl = LaminarController()..attach(durationInFrames: 60);
       ctrl.stepForward();
       expect(ctrl.frame, 1);
       ctrl.dispose();
     });
 
     test('stepBack decrements frame (clamped at 0)', () {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      final ctrl = LaminarController()..attach(durationInFrames: 60);
       ctrl.stepBack(); // already at 0 — clamps
       expect(ctrl.frame, 0);
       ctrl.seekTo(10);
@@ -244,34 +248,40 @@ void main() {
     });
 
     test('advance() increments frame while playing', () {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30)..play();
-      expect(ctrl.advance(), true);
+      final ctrl = LaminarController()
+        ..attach(durationInFrames: 60)
+        ..play();
+      expect(ctrl.advance(loop: false), true);
       expect(ctrl.frame, 1);
       ctrl.dispose();
     });
 
     test('advance() at last frame sets status to finished (no loop)', () {
-      final ctrl = LaminarController(durationInFrames: 3, fps: 30)..play();
-      ctrl.advance(); // → frame 1
-      ctrl.advance(); // → frame 2
-      ctrl.advance(); // → finished (last frame = 2)
+      final ctrl = LaminarController()
+        ..attach(durationInFrames: 3)
+        ..play();
+      ctrl.advance(loop: false); // → frame 1
+      ctrl.advance(loop: false); // → frame 2
+      ctrl.advance(loop: false); // → finished (last frame = 2)
       expect(ctrl.status, PlaybackStatus.finished);
       expect(ctrl.isFinished, true);
       ctrl.dispose();
     });
 
     test('advance() loops when loop=true', () {
-      final ctrl = LaminarController(durationInFrames: 3, fps: 30, loop: true)..play();
-      ctrl.advance(); // 1
-      ctrl.advance(); // 2
-      ctrl.advance(); // → wraps to 0
+      final ctrl = LaminarController()
+        ..attach(durationInFrames: 3)
+        ..play();
+      ctrl.advance(loop: true); // 1
+      ctrl.advance(loop: true); // 2
+      ctrl.advance(loop: true); // → wraps to 0
       expect(ctrl.frame, 0);
       expect(ctrl.isPlaying, true);
       ctrl.dispose();
     });
 
     test('progress is 0.0 at frame 0 and 1.0 at last frame', () {
-      final ctrl = LaminarController(durationInFrames: 10, fps: 30);
+      final ctrl = LaminarController()..attach(durationInFrames: 10);
       expect(ctrl.progress, closeTo(0.0, 0.001));
       ctrl.seekTo(9);
       expect(ctrl.progress, closeTo(1.0, 0.001));
@@ -279,7 +289,7 @@ void main() {
     });
 
     test('notifies listeners on state changes', () {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      final ctrl = LaminarController()..attach(durationInFrames: 60);
       int notifyCount = 0;
       ctrl.addListener(() => notifyCount++);
       ctrl.play();
@@ -291,7 +301,9 @@ void main() {
     });
 
     test('play() is no-op when already playing', () {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30)..play();
+      final ctrl = LaminarController()
+        ..attach(durationInFrames: 60)
+        ..play();
       int count = 0;
       ctrl.addListener(() => count++);
       ctrl.play(); // should not notify

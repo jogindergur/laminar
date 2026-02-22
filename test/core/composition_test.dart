@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:laminar/src/core/composition.dart';
 import 'package:laminar/src/core/composition_provider.dart';
 import 'package:laminar/src/core/laminar_controller.dart';
+import 'package:laminar/src/models/video_config.dart';
 
 void main() {
   group('Composition Widget', () {
@@ -12,11 +13,7 @@ void main() {
         Directionality(
           textDirection: TextDirection.ltr,
           child: Composition<void>(
-            id: 'test_comp',
-            width: 1920,
-            height: 1080,
-            fps: 30,
-            durationInFrames: 60,
+            config: const VideoConfig(id: 'test_comp', width: 1920, height: 1080, fps: 30, durationInFrames: 60),
             defaultProps: null,
             serialize: (_) => {},
             component: (context, props) {
@@ -31,7 +28,8 @@ void main() {
     });
 
     testWidgets('uses external controller if provided', (tester) async {
-      final ctrl = LaminarController(durationInFrames: 60, fps: 30);
+      final ctrl = LaminarController();
+      ctrl.attach(durationInFrames: 60);
       ctrl.seekTo(15);
 
       int? builtFrame;
@@ -39,11 +37,7 @@ void main() {
         Directionality(
           textDirection: TextDirection.ltr,
           child: Composition<void>(
-            id: 'test_comp',
-            width: 1920,
-            height: 1080,
-            fps: 30,
-            durationInFrames: 60,
+            config: const VideoConfig(id: 'test_comp', width: 1920, height: 1080, fps: 30, durationInFrames: 60),
             defaultProps: null,
             serialize: (_) => {},
             controller: ctrl,
@@ -71,11 +65,7 @@ void main() {
         Directionality(
           textDirection: TextDirection.ltr,
           child: Composition<void>(
-            id: 'test_comp',
-            width: 1920,
-            height: 1080,
-            fps: 30,
-            durationInFrames: 60,
+            config: const VideoConfig(id: 'test_comp', width: 1920, height: 1080, fps: 30, durationInFrames: 60),
             defaultProps: null,
             serialize: (_) => {},
             autoPlay: true,

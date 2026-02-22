@@ -47,22 +47,8 @@ import 'laminar_controller.dart';
 class Composition<T> extends StatefulWidget {
   // ── Identity ──────────────────────────────────────────────────────────────
 
-  /// Unique human-readable identifier for this composition.
-  final String id;
-
-  // ── Render settings ───────────────────────────────────────────────────────
-
-  /// Logical output width (used by the render pipeline and [VideoConfig]).
-  final int width;
-
-  /// Logical output height.
-  final int height;
-
-  /// Frames per second.
-  final int fps;
-
-  /// Total number of frames.
-  final int durationInFrames;
+  /// The master metadata entity describing this composition's render context.
+  final VideoConfig config;
 
   // ── Props ─────────────────────────────────────────────────────────────────
 
@@ -99,11 +85,7 @@ class Composition<T> extends StatefulWidget {
 
   const Composition({
     super.key,
-    required this.id,
-    required this.width,
-    required this.height,
-    required this.fps,
-    required this.durationInFrames,
+    required this.config,
     required this.defaultProps,
     required this.serialize,
     required this.component,
@@ -144,10 +126,17 @@ class _CompositionState<T> extends State<Composition<T>> {
       _ctrl = widget.controller!;
       _ownsController = false;
     } else {
-      _ctrl = LaminarController(durationInFrames: widget.durationInFrames, fps: widget.fps, loop: widget.loop);
+      _ctrl = LaminarController();
       _ownsController = true;
-      if (widget.autoPlay) _ctrl.play();
     }
+
+    // Always attach the controller to the current configuration bounds
+    _ctrl.attach(durationInFrames: widget.config.durationInFrames);
+
+    if (_ownsController && widget.autoPlay) {
+      _ctrl.play();
+    }
+
     _ctrl.addListener(_onControllerChanged);
     _startTicker();
   }
@@ -172,13 +161,13 @@ class _CompositionState<T> extends State<Composition<T>> {
 
   void _startTicker() {
     if (_ticker != null) return; // already running
-    final interval = Duration(microseconds: (1000000 / widget.fps).round());
+    final interval = Duration(microseconds: (1000000 / widget.config.fps).round());
     _ticker = Timer.periodic(interval, (_) {
       if (!_ctrl.isPlaying) {
         _stopTicker();
         return;
       }
-      _ctrl.advance();
+      _ctrl.advance(loop: widget.loop);
       if (mounted) setState(() {});
     });
   }
@@ -198,17 +187,14 @@ class _CompositionState<T> extends State<Composition<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final config = VideoConfig(
-      id: widget.id,
-      width: widget.width,
-      height: widget.height,
-      fps: widget.fps,
-      durationInFrames: widget.durationInFrames,
-      defaultProps: widget.serialize(widget.defaultProps),
-    );
+    // We now just use the widget.config injected into the Composition.
+    // However, if the config didn't have defaultProps serialized, we serialize them here.
+    // In many cases, we might want to just pass an already serialized props map, but
+    // to keep the API similar, we can create a modified config.
+    final renderConfig = widget.config.copyWith(defaultProps: widget.serialize(widget.defaultProps));
 
     return CompositionProvider(
-      config: config,
+      config: renderConfig,
       frame: _ctrl.frame,
       child: Builder(builder: (ctx) => widget.component(ctx, widget.defaultProps)),
     );

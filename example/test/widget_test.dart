@@ -185,11 +185,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: Composition<void>(
-              id: 'test',
-              width: 1920,
-              height: 1080,
-              fps: 30,
-              durationInFrames: 90,
+              config: const VideoConfig(id: 'test', width: 1920, height: 1080, fps: 30, durationInFrames: 90),
               defaultProps: null,
               serialize: (_) => {},
               component: (ctx, _) {
@@ -206,18 +202,14 @@ void main() {
     });
 
     testWidgets('seekTo via external controller updates rendered frame', (tester) async {
-      final ctrl = LaminarController(durationInFrames: 90, fps: 30);
+      final ctrl = LaminarController();
       addTearDown(ctrl.dispose);
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: Composition<void>(
-              id: 'ctrl-test',
-              width: 1920,
-              height: 1080,
-              fps: 30,
-              durationInFrames: 90,
+              config: const VideoConfig(id: 'ctrl-test', width: 1920, height: 1080, fps: 30, durationInFrames: 90),
               defaultProps: null,
               serialize: (_) => {},
               component: (ctx, _) {
@@ -243,11 +235,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: Composition<void>(
-              id: 'config-prop',
-              width: 1280,
-              height: 720,
-              fps: 60,
-              durationInFrames: 120,
+              config: const VideoConfig(id: 'config-prop', width: 1280, height: 720, fps: 60, durationInFrames: 120),
               defaultProps: null,
               serialize: (_) => {},
               component: (ctx, _) {

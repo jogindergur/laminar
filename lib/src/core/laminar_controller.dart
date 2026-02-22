@@ -14,7 +14,7 @@ import 'package:flutter/foundation.dart';
 ///   @override
 ///   void initState() {
 ///     super.initState();
-///     _ctrl = LaminarController(durationInFrames: 90, fps: 30)
+///     _ctrl = LaminarController()
 ///       ..play(); // auto-start
 ///   }
 ///
@@ -37,24 +37,25 @@ import 'package:flutter/foundation.dart';
 /// When no controller is passed to [Composition], a default one is created
 /// and owned internally — the composition simply auto-plays on build.
 class LaminarController extends ChangeNotifier {
-  /// Total number of frames in the composition this controller drives.
-  final int durationInFrames;
-
-  /// Frames per second.
-  final int fps;
-
-  /// Whether playback restarts from frame 0 after the last frame.
-  bool loop;
-
+  int _durationInFrames = 0;
   int _frame = 0;
   PlaybackStatus _status = PlaybackStatus.idle;
 
-  LaminarController({required this.durationInFrames, required this.fps, this.loop = false, int initialFrame = 0})
-    : assert(durationInFrames > 0),
-      assert(fps > 0),
-      assert(initialFrame >= 0 && initialFrame < durationInFrames) {
+  LaminarController({int initialFrame = 0}) : assert(initialFrame >= 0) {
     _frame = initialFrame;
   }
+
+  /// Called by `Composition` when this controller is attached.
+  /// This provides the controller with the necessary bounds for playback.
+  void attach({required int durationInFrames}) {
+    assert(durationInFrames > 0);
+    _durationInFrames = durationInFrames;
+    _frame = _frame.clamp(0, durationInFrames > 0 ? durationInFrames - 1 : 0);
+  }
+
+  /// Total number of frames in the active composition.
+  /// Will return 0 if the controller has not yet been attached to a Composition.
+  int get durationInFrames => _durationInFrames;
 
   // ── State ─────────────────────────────────────────────────────────────────
 
@@ -73,8 +74,9 @@ class LaminarController extends ChangeNotifier {
   /// `true` if the composition is at its last frame and not playing.
   bool get isFinished => _status == PlaybackStatus.finished;
 
-  /// Playback progress in [0.0, 1.0].
-  double get progress => durationInFrames > 1 ? _frame / (durationInFrames - 1) : 1.0;
+  /// Playback progress in [0.0, 1.0]. Returns 0.0 if not attached.
+  double get progress =>
+      _durationInFrames > 1 ? _frame / (_durationInFrames - 1) : (_durationInFrames == 1 ? 1.0 : 0.0);
 
   // ── Commands ─────────────────────────────────────────────────────────────
 
@@ -110,7 +112,11 @@ class LaminarController extends ChangeNotifier {
 
   /// Seeks to a specific [frame] index. Clamps to valid range.
   void seekTo(int frame) {
-    _frame = frame.clamp(0, durationInFrames - 1);
+    if (_durationInFrames == 0) {
+      _frame = frame; // Allow pre-seeking if not attached yet
+    } else {
+      _frame = frame.clamp(0, _durationInFrames - 1);
+    }
     notifyListeners();
   }
 
@@ -125,9 +131,9 @@ class LaminarController extends ChangeNotifier {
   /// Advances the frame by one tick. Called by the [Composition] widget's
   /// internal [Ticker]. Returns `true` if the frame was advanced, `false` if
   /// the animation reached its end.
-  bool advance() {
-    if (_status != PlaybackStatus.playing) return false;
-    if (_frame >= durationInFrames - 1) {
+  bool advance({required bool loop}) {
+    if (_status != PlaybackStatus.playing || _durationInFrames == 0) return false;
+    if (_frame >= _durationInFrames - 1) {
       if (loop) {
         _frame = 0;
       } else {
@@ -142,7 +148,7 @@ class LaminarController extends ChangeNotifier {
   }
 
   @override
-  String toString() => 'LaminarController(frame: $_frame/$durationInFrames, status: $_status)';
+  String toString() => 'LaminarController(frame: $_frame/$_durationInFrames, status: $_status)';
 }
 
 /// Playback status of a [LaminarController].
@@ -156,6 +162,6 @@ enum PlaybackStatus {
   /// Paused at some frame, ready to resume.
   paused,
 
-  /// Reached the last frame and [LaminarController.loop] is false.
+  /// Reached the last frame and [Composition.loop] is false.
   finished,
 }

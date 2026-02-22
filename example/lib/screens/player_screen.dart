@@ -27,13 +27,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void initState() {
     super.initState();
-    _ctrl = LaminarController(durationInFrames: e.durationInFrames, fps: e.fps, loop: false);
+    _ctrl = LaminarController();
     _ctrl.addListener(_onFrame);
     _logs.add(
       '✓ Composition "${e.id}" loaded — '
       '${e.durationInFrames} frames @ ${e.fps}fps',
     );
-    _logs.add('✓ LaminarController created — durationInFrames: ${e.durationInFrames}');
+    _logs.add('✓ LaminarController created — waiting for attach...');
   }
 
   @override
@@ -114,15 +114,18 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               child: AspectRatio(
                                 aspectRatio: 16 / 9,
                                 child: Composition<void>(
-                                  id: e.id,
-                                  width: 1920,
-                                  height: 1080,
-                                  fps: e.fps,
-                                  durationInFrames: e.durationInFrames,
+                                  config: VideoConfig(
+                                    id: e.id,
+                                    width: 1920,
+                                    height: 1080,
+                                    fps: e.fps,
+                                    durationInFrames: e.durationInFrames,
+                                  ),
                                   defaultProps: null,
                                   serialize: (_) => {},
                                   component: (ctx, _) => e.composition,
                                   controller: _ctrl,
+                                  loop: false,
                                 ),
                               ),
                             ),

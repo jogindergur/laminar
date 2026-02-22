@@ -36,14 +36,14 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
   @override
   void initState() {
     super.initState();
-    _heroCtrl = LaminarController(durationInFrames: 90, fps: 30, loop: true)..play();
-    _counterCtrl = LaminarController(durationInFrames: 120, fps: 30, loop: true)..play();
-    _waveCtrl = LaminarController(durationInFrames: 90, fps: 30, loop: true)..play();
-    _seriesCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
-    _appleCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
-    _starbucksCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
-    _olympicCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
-    _trendCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
+    _heroCtrl = LaminarController()..play();
+    _counterCtrl = LaminarController()..play();
+    _waveCtrl = LaminarController()..play();
+    _seriesCtrl = LaminarController()..play();
+    _appleCtrl = LaminarController()..play();
+    _starbucksCtrl = LaminarController()..play();
+    _olympicCtrl = LaminarController()..play();
+    _trendCtrl = LaminarController()..play();
   }
 
   @override
@@ -108,9 +108,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFF6C63FF),
             aspectRatio: 16 / 9,
             ctrl: _heroCtrl,
-            compositionId: 'hero-banner',
-            width: 1920,
-            height: 1080,
+            config: const VideoConfig(id: 'hero-banner', width: 1920, height: 1080, fps: 30, durationInFrames: 90),
             child: const FadeTitleComposition(),
           ),
 
@@ -123,9 +121,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFF00C9A7),
             aspectRatio: 1,
             ctrl: _counterCtrl,
-            compositionId: 'counter',
-            width: 600,
-            height: 600,
+            config: const VideoConfig(id: 'counter', width: 600, height: 600, fps: 30, durationInFrames: 120),
             child: const CounterComposition(),
           ),
 
@@ -138,9 +134,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFFFF6584),
             aspectRatio: 1,
             ctrl: _waveCtrl,
-            compositionId: 'wave',
-            width: 600,
-            height: 600,
+            config: const VideoConfig(id: 'wave', width: 600, height: 600, fps: 30, durationInFrames: 90),
             child: const WaveComposition(),
           ),
 
@@ -153,9 +147,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFFFFBE0B),
             aspectRatio: 16 / 9,
             ctrl: _seriesCtrl,
-            compositionId: 'series-demo',
-            width: 1920,
-            height: 1080,
+            config: const VideoConfig(id: 'series-demo', width: 1920, height: 1080, fps: 30, durationInFrames: 150),
             child: const SeriesDemoComposition(),
           ),
 
@@ -168,9 +160,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFFE0E0E0),
             aspectRatio: 16 / 9,
             ctrl: _appleCtrl,
-            compositionId: 'apple-logo',
-            width: 1920,
-            height: 1080,
+            config: const VideoConfig(id: 'apple-logo', width: 1920, height: 1080, fps: 30, durationInFrames: 150),
             child: const AppleLogoComposition(),
           ),
 
@@ -183,9 +173,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFF00A862),
             aspectRatio: 16 / 9,
             ctrl: _starbucksCtrl,
-            compositionId: 'starbucks-logo',
-            width: 1920,
-            height: 1080,
+            config: const VideoConfig(id: 'starbucks-logo', width: 1920, height: 1080, fps: 30, durationInFrames: 150),
             child: const StarbucksLogoComposition(),
           ),
 
@@ -196,9 +184,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFF0085C7),
             aspectRatio: 16 / 9,
             ctrl: _olympicCtrl,
-            compositionId: 'olympic-rings',
-            width: 1920,
-            height: 1080,
+            config: const VideoConfig(id: 'olympic-rings', width: 1920, height: 1080, fps: 30, durationInFrames: 150),
             child: const OlympicLogoComposition(),
           ),
 
@@ -211,9 +197,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFF6C63FF),
             aspectRatio: 16 / 9,
             ctrl: _trendCtrl,
-            compositionId: 'trend-chart',
-            width: 1920,
-            height: 1080,
+            config: const VideoConfig(id: 'trend-chart', width: 1920, height: 1080, fps: 30, durationInFrames: 150),
             child: const TrendChartComposition(),
           ),
 
@@ -279,9 +263,7 @@ class _DualRow extends StatelessWidget {
   final Color accent;
   final double aspectRatio;
   final LaminarController ctrl;
-  final String compositionId;
-  final int width;
-  final int height;
+  final VideoConfig config;
   final Widget child;
 
   const _DualRow({
@@ -290,37 +272,30 @@ class _DualRow extends StatelessWidget {
     required this.accent,
     required this.aspectRatio,
     required this.ctrl,
-    required this.compositionId,
-    required this.width,
-    required this.height,
+    required this.config,
     required this.child,
   });
 
   @override
   Widget build(BuildContext context) {
     final comp = Composition<void>(
-      id: compositionId,
-      width: width,
-      height: height,
-      fps: 30,
-      durationInFrames: ctrl.durationInFrames,
+      config: config,
       defaultProps: null,
       serialize: (_) => {},
       component: (ctx, _) => child,
       controller: ctrl,
+      loop: true,
     );
 
     // The "with-player" version uses a separate id to avoid key collisions
+    final playerConfig = config.copyWith(id: '${config.id}-player');
     final compPlayer = Composition<void>(
-      id: '$compositionId-player',
-      width: width,
-      height: height,
-      fps: 30,
-      durationInFrames: ctrl.durationInFrames,
+      config: playerConfig,
       defaultProps: null,
       serialize: (_) => {},
       component: (ctx, _) => child,
       controller: ctrl,
+      loop: true,
     );
 
     return Column(

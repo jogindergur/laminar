@@ -85,11 +85,13 @@ class MyScene extends StatelessWidget {
 
 ```dart
 Composition<MyProps>(
-  id: 'my-video',
-  width: 1920,
-  height: 1080,
-  fps: 30,
-  durationInFrames: 300,      // 10 seconds
+  config: const VideoConfig(
+    id: 'my-video',
+    width: 1920,
+    height: 1080,
+    fps: 30,
+    durationInFrames: 300,      // 10 seconds
+  ),
   defaultProps: const MyProps(title: 'Hello, Laminar!'),
   serialize: (p) => p.toJson(),
   component: (_, __) => const MyScene(),
