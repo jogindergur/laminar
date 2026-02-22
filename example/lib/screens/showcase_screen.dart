@@ -4,6 +4,7 @@ import 'package:laminar/laminar.dart';
 import '../compositions/apple_logo_composition.dart';
 import '../compositions/counter_composition.dart';
 import '../compositions/fade_title_composition.dart';
+import '../compositions/olympic_logo_composition.dart';
 import '../compositions/series_demo_composition.dart';
 import '../compositions/starbucks_logo_composition.dart';
 import '../compositions/wave_composition.dart';
@@ -28,6 +29,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
   late final LaminarController _seriesCtrl;
   late final LaminarController _appleCtrl;
   late final LaminarController _starbucksCtrl;
+  late final LaminarController _olympicCtrl;
 
   @override
   void initState() {
@@ -38,6 +40,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
     _seriesCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
     _appleCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
     _starbucksCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
+    _olympicCtrl = LaminarController(durationInFrames: 150, fps: 30, loop: true)..play();
   }
 
   @override
@@ -48,6 +51,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
     _seriesCtrl.dispose();
     _appleCtrl.dispose();
     _starbucksCtrl.dispose();
+    _olympicCtrl.dispose();
     super.dispose();
   }
 
@@ -69,7 +73,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
               child: const Icon(Icons.widgets_rounded, color: Colors.white, size: 14),
             ),
             const SizedBox(width: 10),
-            const Text('Without Player, working as standalone widget.'),
+            const Text('Showcase'),
           ],
         ),
         actions: [
@@ -179,6 +183,19 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             width: 1920,
             height: 1080,
             child: const StarbucksLogoComposition(),
+          ),
+
+          // ── Olympic Rings ──────────────────────────────────────────────────
+          _DualRow(
+            label: '🏅 Olympic Rings',
+            sub: 'OlympicLogoComposition · 16:9 · 150f @ 30fps — rings draw themselves',
+            accent: const Color(0xFF0085C7),
+            aspectRatio: 16 / 9,
+            ctrl: _olympicCtrl,
+            compositionId: 'olympic-rings',
+            width: 1920,
+            height: 1080,
+            child: const OlympicLogoComposition(),
           ),
 
           const SizedBox(height: 40),
