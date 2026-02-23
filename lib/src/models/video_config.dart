@@ -31,6 +31,9 @@ class VideoConfig {
   /// Preferred output codec. May be overridden by [RenderMediaOptions].
   final Codec? defaultCodec;
 
+  /// Whether the player should show a download button to export the composition.
+  final bool download;
+
   const VideoConfig({
     required this.id,
     required this.width,
@@ -39,10 +42,11 @@ class VideoConfig {
     required this.durationInFrames,
     this.defaultProps = const {},
     this.defaultCodec,
-  })  : assert(width > 0, 'width must be positive'),
-        assert(height > 0, 'height must be positive'),
-        assert(fps > 0, 'fps must be positive'),
-        assert(durationInFrames > 0, 'durationInFrames must be positive');
+    this.download = false,
+  }) : assert(width > 0, 'width must be positive'),
+       assert(height > 0, 'height must be positive'),
+       assert(fps > 0, 'fps must be positive'),
+       assert(durationInFrames > 0, 'durationInFrames must be positive');
 
   /// Total duration of the composition in seconds.
   double get durationInSeconds => durationInFrames / fps;
@@ -59,6 +63,7 @@ class VideoConfig {
     int? durationInFrames,
     Map<String, dynamic>? defaultProps,
     Codec? defaultCodec,
+    bool? download,
   }) {
     return VideoConfig(
       id: id ?? this.id,
@@ -68,6 +73,7 @@ class VideoConfig {
       durationInFrames: durationInFrames ?? this.durationInFrames,
       defaultProps: defaultProps ?? this.defaultProps,
       defaultCodec: defaultCodec ?? this.defaultCodec,
+      download: download ?? this.download,
     );
   }
 
@@ -79,28 +85,26 @@ class VideoConfig {
       height: json['height'] as int,
       fps: json['fps'] as int,
       durationInFrames: json['durationInFrames'] as int,
-      defaultProps:
-          (json['defaultProps'] as Map<String, dynamic>?) ?? const {},
-      defaultCodec: json['defaultCodec'] != null
-          ? Codec.values.byName(json['defaultCodec'] as String)
-          : null,
+      defaultProps: (json['defaultProps'] as Map<String, dynamic>?) ?? const {},
+      defaultCodec: json['defaultCodec'] != null ? Codec.values.byName(json['defaultCodec'] as String) : null,
+      download: json['download'] as bool? ?? false,
     );
   }
 
   /// Serializes this [VideoConfig] to a JSON map.
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'width': width,
-        'height': height,
-        'fps': fps,
-        'durationInFrames': durationInFrames,
-        'defaultProps': defaultProps,
-        if (defaultCodec != null) 'defaultCodec': defaultCodec!.name,
-      };
+    'id': id,
+    'width': width,
+    'height': height,
+    'fps': fps,
+    'durationInFrames': durationInFrames,
+    'defaultProps': defaultProps,
+    if (defaultCodec != null) 'defaultCodec': defaultCodec!.name,
+    'download': download,
+  };
 
   @override
-  String toString() =>
-      'VideoConfig(id: $id, ${width}x$height @ ${fps}fps, $durationInFrames frames)';
+  String toString() => 'VideoConfig(id: $id, ${width}x$height @ ${fps}fps, $durationInFrames frames)';
 
   @override
   bool operator ==(Object other) =>
@@ -110,9 +114,9 @@ class VideoConfig {
           other.width == width &&
           other.height == height &&
           other.fps == fps &&
-          other.durationInFrames == durationInFrames;
+          other.durationInFrames == durationInFrames &&
+          other.download == download;
 
   @override
-  int get hashCode =>
-      Object.hash(id, width, height, fps, durationInFrames);
+  int get hashCode => Object.hash(id, width, height, fps, durationInFrames, download);
 }

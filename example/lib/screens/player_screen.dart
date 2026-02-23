@@ -1,9 +1,26 @@
-import 'dart:async';
+import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:laminar/laminar.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../utils/export_mp4.dart';
 import 'gallery_screen.dart';
+
+enum ExportQuality {
+  sd('SD (480p)', 854, 480),
+  hd('HD (1080p)', 1920, 1080),
+  qhd('2K (1440p)', 2560, 1440),
+  uhd('4K (2160p)', 3840, 2160);
+
+  final String label;
+  final int width;
+  final int height;
+
+  const ExportQuality(this.label, this.width, this.height);
+}
 
 /// An interactive deep-dive player for a single composition.
 ///
@@ -21,6 +38,12 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> {
   late final LaminarController _ctrl;
   final List<String> _logs = [];
+
+  // Repaint boundary key to capture frames
+  final _compositionKey = GlobalKey();
+
+  bool _isExporting = false;
+  ExportQuality _selectedQuality = ExportQuality.hd;
 
   CompositionEntry get e => widget.entry;
 
@@ -45,30 +68,98 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   void _onFrame() => setState(() {});
 
-  void _simulateRender() {
+  Future<void> _exportMp4() async {
+    if (_isExporting) return;
     _ctrl.stop();
     setState(() {
+      _isExporting = true;
       _logs.clear();
-      _logs.add('▶ renderMedia() started…');
+      _logs.add('▶ Generating ${e.durationInFrames} frames…');
     });
-    int rendered = 0;
-    Timer.periodic(const Duration(milliseconds: 60), (t) {
-      rendered += 4;
-      if (rendered >= e.durationInFrames) {
-        rendered = e.durationInFrames;
-        t.cancel();
-        if (!mounted) return;
-        setState(() {
-          _logs.add('  ✓ ${e.durationInFrames}/${e.durationInFrames} frames — 100%');
-          _logs.add('  ✓ Piped to FFmpeg → output_${e.id}.mp4');
-          _logs.add('✅ Render complete in ${e.durationInFrames * 33}ms');
-        });
-      } else {
-        final pct = (rendered / e.durationInFrames * 100).toStringAsFixed(0);
-        if (!mounted) return;
-        setState(() => _logs.add('  → $rendered/${e.durationInFrames} — $pct%'));
+
+    final exporter = LaminarMp4Exporter();
+
+    try {
+      final watch = Stopwatch()..start();
+
+      await exporter.initialize(
+        fps: e.fps,
+        width: _selectedQuality.width,
+        height: _selectedQuality.height,
+        qualityName: _selectedQuality.name.toUpperCase(),
+      );
+
+      // 1. Generate frames by seeking and capturing RepaintBoundary
+      for (int i = 0; i < e.durationInFrames; i++) {
+        _ctrl.seekTo(i);
+        // Yield momentarily to let Flutter flush the layout/paint pipeline out of the microtask queue.
+        await Future.delayed(Duration.zero);
+
+        final boundary = _compositionKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+        if (boundary == null) throw Exception('RepaintBoundary not found');
+
+        // Capture at selected quality resolution regardless of the UI's display size
+        final double pixelRatio = boundary.size.width > 0
+            ? _selectedQuality.width.toDouble() / boundary.size.width
+            : 1.0;
+        final ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
+
+        // Use fast native C++ ImageByteFormat.png encoding
+        final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+        if (byteData == null) throw Exception('Failed to get byte data for frame $i');
+
+        // 2. Send the compressed PNG chunk to the background Isolate to write to disk.
+        // A 16ms yield here gives the Flutter UI engine a full timeslice to breathe and stay interactive.
+        await exporter.addFrame(byteData.buffer.asUint8List());
+        await Future.delayed(const Duration(milliseconds: 16));
+
+        if (i % 5 == 0 && mounted) {
+          setState(() {
+            _logs.add('  → Captured & Encoded $i/${e.durationInFrames}');
+          });
+        }
       }
-    });
+
+      watch.stop();
+      if (!mounted) return;
+      setState(() {
+        _logs.add('✓ Frames captured in ${watch.elapsedMilliseconds}ms');
+        _logs.add('▶ Formatting MP4 video...');
+      });
+
+      // 3. Finalize and assemble using FFmpeg natively
+      final outputPath = await exporter.export((progress) {
+        if (!mounted) return;
+        final pct = (progress * 100).toStringAsFixed(1);
+        setState(() => _logs.add('  → Encoding: $pct%'));
+      });
+
+      if (!mounted) return;
+      setState(() {
+        _logs.add('✅ Export complete!');
+        if (!kIsWeb) {
+          _logs.add('✓ Saved to: $outputPath');
+        }
+      });
+
+      // 4. Offer to share/save the file natively (if not on web, since web downloads automatically)
+      if (!kIsWeb) {
+        // ignore: deprecated_member_use
+        await Share.shareXFiles([XFile(outputPath)], text: 'Exported Laminar Video');
+      }
+    } catch (error, stack) {
+      if (!mounted) return;
+      setState(() {
+        _logs.add('❌ Export failed');
+        _logs.add(error.toString());
+      });
+      debugPrint('Export error: $error\n$stack');
+    } finally {
+      await exporter.dispose();
+      if (mounted) {
+        setState(() => _isExporting = false);
+      }
+    }
   }
 
   @override
@@ -104,28 +195,32 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       children: [
                         // The composition IS the widget — controller drives it.
                         Expanded(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white12, width: 1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: AspectRatio(
-                                aspectRatio: 16 / 9,
-                                child: Composition<void>(
-                                  config: VideoConfig(
-                                    id: e.id,
-                                    width: 1920,
-                                    height: 1080,
-                                    fps: e.fps,
-                                    durationInFrames: e.durationInFrames,
+                          child: RepaintBoundary(
+                            key: _compositionKey,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.white12, width: 1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: Composition<void>(
+                                    config: VideoConfig(
+                                      id: e.id,
+                                      width: _selectedQuality.width,
+                                      height: _selectedQuality.height,
+                                      fps: e.fps,
+                                      durationInFrames: e.durationInFrames,
+                                      download: e.download,
+                                    ),
+                                    defaultProps: null,
+                                    serialize: (_) => {},
+                                    component: (ctx, _) => e.composition,
+                                    controller: _ctrl,
+                                    loop: false,
                                   ),
-                                  defaultProps: null,
-                                  serialize: (_) => {},
-                                  component: (ctx, _) => e.composition,
-                                  controller: _ctrl,
-                                  loop: false,
                                 ),
                               ),
                             ),
@@ -179,16 +274,57 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               '${_ctrl.status.name.toUpperCase()}',
                               style: const TextStyle(color: Colors.white54, fontSize: 12, fontFamily: 'monospace'),
                             ),
-                            const Spacer(),
-                            TextButton.icon(
-                              onPressed: _simulateRender,
-                              icon: const Icon(Icons.movie_creation_outlined, size: 15),
-                              label: const Text('Simulate render'),
-                              style: TextButton.styleFrom(
-                                foregroundColor: e.accent,
-                                textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                            // Download MP4 Support
+                            if (e.download) ...[
+                              const Spacer(),
+                              if (_isExporting)
+                                const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                              else ...[
+                                DropdownButtonHideUnderline(
+                                  child: DropdownButton<ExportQuality>(
+                                    value: _selectedQuality,
+                                    dropdownColor: const Color(0xFF1A1A24),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white70,
+                                    ),
+                                    icon: const Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      size: 16,
+                                      color: Colors.white54,
+                                    ),
+                                    onChanged: (q) {
+                                      if (q != null) setState(() => _selectedQuality = q);
+                                    },
+                                    items: ExportQuality.values.map((q) {
+                                      return DropdownMenuItem(value: q, child: Text(q.label));
+                                    }).toList(),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                TextButton.icon(
+                                  onPressed: _exportMp4,
+                                  icon: const Icon(Icons.download_rounded, size: 16),
+                                  label: const Text('Export MP4'),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: e.accent,
+                                    textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ],
+                            ] else ...[
+                              const Spacer(),
+                              TextButton.icon(
+                                onPressed: null,
+                                icon: const Icon(Icons.movie_creation_outlined, size: 15),
+                                label: const Text('Render (Disabled)'),
+                                style: TextButton.styleFrom(
+                                  disabledForegroundColor: Colors.white30,
+                                  textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                                ),
                               ),
-                            ),
+                            ],
                           ],
                         ),
                       ],

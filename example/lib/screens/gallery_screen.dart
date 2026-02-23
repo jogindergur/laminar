@@ -20,6 +20,7 @@ class CompositionEntry {
   final Widget composition;
   final int durationInFrames;
   final int fps;
+  final bool download;
 
   const CompositionEntry({
     required this.id,
@@ -30,6 +31,7 @@ class CompositionEntry {
     required this.composition,
     required this.durationInFrames,
     required this.fps,
+    this.download = false,
   });
 }
 
@@ -46,6 +48,7 @@ class GalleryScreen extends StatelessWidget {
       composition: const FadeTitleComposition(),
       durationInFrames: 90,
       fps: 30,
+      download: true,
     ),
     CompositionEntry(
       id: 'counter',
@@ -86,6 +89,7 @@ class GalleryScreen extends StatelessWidget {
       composition: const AppleLogoComposition(),
       durationInFrames: 150,
       fps: 30,
+      download: true,
     ),
     CompositionEntry(
       id: 'starbucks-logo',
