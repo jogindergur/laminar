@@ -23,6 +23,8 @@ export 'src/core/composition_provider.dart';
 export 'src/core/laminar_controller.dart';
 export 'src/core/sequence.dart';
 export 'src/core/series.dart';
+// ── Export ───────────────────────────────────────────────────────────────────
+export 'src/export/export_mp4.dart';
 export 'src/hooks/use_current_frame.dart';
 // ── Hooks / context accessors ─────────────────────────────────────────────────
 export 'src/hooks/use_video_config.dart';
@@ -40,3 +42,5 @@ export 'src/models/video_config.dart';
 export 'src/renderer/frame_renderer.dart';
 // ── Renderer ─────────────────────────────────────────────────────────────────
 export 'src/renderer/media_renderer.dart';
+// ── Widgets ──────────────────────────────────────────────────────────────────
+export 'src/widgets/laminar_player.dart';

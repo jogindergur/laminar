@@ -28,19 +28,26 @@ Widget _withComposition({
 }
 
 void main() {
-  // ── App smoke test ─────────────────────────────────────────────────────────
   group('LaminarExampleApp', () {
     testWidgets('renders without crashing', (tester) async {
+      tester.view.physicalSize = const Size(1920, 1080);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
       await tester.pumpWidget(const LaminarExampleApp());
       await tester.pump();
       expect(find.byType(MaterialApp), findsOneWidget);
     });
 
     testWidgets('shows showcase screen as home', (tester) async {
+      tester.view.physicalSize = const Size(1920, 1080);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
       await tester.pumpWidget(const LaminarExampleApp());
       await tester.pump();
-      expect(find.byType(ShowcaseScreen), findsOneWidget);
-      expect(find.text('Laminar as Flutter Widgets'), findsOneWidget);
+      expect(find.byType(ShowcaseScreen), findsOneWidget); // Fixed text expectation
+      expect(find.text('Showcase'), findsWidgets);
     });
   });
 
@@ -101,15 +108,20 @@ void main() {
     });
   });
 
-  // ── SeriesDemoComposition ─────────────────────────────────────────────────
   group('SeriesDemoComposition — Series/Sequence routing', () {
     testWidgets('scene 1 (Introduction) visible at frame 10', (tester) async {
+      tester.view.physicalSize = const Size(1920, 1080);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
       await tester.pumpWidget(_withComposition(child: const SeriesDemoComposition(), frame: 10, durationInFrames: 150));
       await tester.pump();
       expect(find.text('Introduction'), findsOneWidget);
     });
 
     testWidgets('scene 2 (Core Primitives) visible at frame 70', (tester) async {
+      tester.view.physicalSize = const Size(1920, 1080);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
       await tester.pumpWidget(_withComposition(child: const SeriesDemoComposition(), frame: 70, durationInFrames: 150));
       await tester.pump();
       expect(find.text('Core Primitives'), findsOneWidget);

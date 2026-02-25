@@ -196,7 +196,12 @@ class _MainScene extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            Text('— $desc', style: TextStyle(color: Colors.white.withOpacity(0.55), fontSize: 13)),
+                            Expanded(
+                              child: Text(
+                                '— $desc',
+                                style: TextStyle(color: Colors.white.withOpacity(0.55), fontSize: 13),
+                              ),
+                            ),
                           ],
                         ),
                       ),
