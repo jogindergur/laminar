@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -27,15 +28,18 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>laminar_example</title>
   <link rel="manifest" href="manifest.json">
 
-  <!-- ffmpeg.wasm support -->
-  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
+  <!-- WebCodecs WebM Muxer -->
+  <script src="https://unpkg.com/mp4-muxer/build/mp4-muxer.js"></script>
+  <script src="laminar_muxer.js"></script>
 </head>
+
 <body>
   <script src="flutter_bootstrap.js" async></script>
 </body>
+
 </html>

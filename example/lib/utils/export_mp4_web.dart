@@ -1,13 +1,23 @@
 import 'dart:js_interop';
 
-import 'package:ffmpeg_wasm/ffmpeg_wasm.dart';
 import 'package:flutter/foundation.dart';
-import 'package:web/web.dart' as web;
+
+@JS('window.laminarMuxer')
+extension type LaminarMuxer._(JSObject _) implements JSObject {
+  external JSPromise initialize(JSNumber width, JSNumber height, JSNumber fps);
+  external JSPromise addFrame(JSUint8Array rgbaBytes, JSNumber width, JSNumber height);
+  external JSPromise finish(JSString filename);
+}
+
+@JS('window.laminarMuxer')
+external LaminarMuxer get laminarMuxer;
 
 class LaminarMp4Exporter {
-  final List<Uint8List> _frames = [];
-  int _fps = 30;
+  int _width = 1920;
+  int _height = 1080;
   String _qualityName = 'HD';
+  int _frameCount = 0;
+  bool _initialized = false;
 
   Future<void> initialize({
     required int fps,
@@ -15,91 +25,37 @@ class LaminarMp4Exporter {
     required int height,
     required String qualityName,
   }) async {
-    _fps = fps;
+    _width = width;
+    _height = height;
     _qualityName = qualityName;
-    _frames.clear();
+    _frameCount = 0;
+
+    await laminarMuxer.initialize(width.toJS, height.toJS, fps.toJS).toDart;
+    _initialized = true;
   }
 
-  Future<void> addFrame(Uint8List pngBytes) async {
-    _frames.add(pngBytes);
+  Future<void> addFrame(Uint8List rgbaBytes) async {
+    if (!_initialized) throw Exception('Exporter not initialized');
+    await laminarMuxer.addFrame(rgbaBytes.toJS, _width.toJS, _height.toJS).toDart;
+    _frameCount++;
   }
 
   Future<String> export(void Function(double) onProgress) async {
-    if (_frames.isEmpty) throw Exception('No frames provided');
+    if (!_initialized) throw Exception('Exporter not initialized');
+    if (_frameCount == 0) throw Exception('No frames provided');
 
-    final ffmpeg = createFFmpeg(
-      CreateFFmpegParam(
-        log: true,
-        corePath: 'https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js',
-        mainName: 'main',
-      ),
-    );
+    // In a real scenario we'd stream progress back from JS, but for now
+    // the frame encoding inherently takes time, and muxing natively is almost instant.
+    onProgress(1.0);
 
-    ffmpeg.setProgress((ProgressParam progress) {
-      onProgress(0.5 + (progress.ratio * 0.5));
-    });
+    final filename = 'laminar_export_${_qualityName}_${DateTime.now().millisecondsSinceEpoch}.mp4';
+    await laminarMuxer.finish(filename.toJS).toDart;
 
-    ffmpeg.setLogger((LoggerParam logger) {
-      debugPrint('FFmpeg Log [${logger.type}]: ${logger.message}');
-    });
-
-    await ffmpeg.load();
-
-    for (int i = 0; i < _frames.length; i++) {
-      final fileName = 'frame_${i.toString().padLeft(4, '0')}.png';
-      ffmpeg.writeFile(fileName, _frames[i]);
-      if (i % 10 == 0) {
-        onProgress((i / _frames.length) * 0.5);
-      }
-    }
-
-    await ffmpeg.run([
-      '-framerate',
-      _fps.toString(),
-      '-i',
-      'frame_%04d.png',
-      '-vf',
-      'scale=trunc(iw/2)*2:trunc(ih/2)*2',
-      '-c:v',
-      'libx264',
-      '-preset',
-      'ultrafast',
-      '-profile:v',
-      'high',
-      '-level:v',
-      '5.1',
-      '-crf',
-      '18',
-      '-color_primaries',
-      'bt709',
-      '-color_trc',
-      'bt709',
-      '-colorspace',
-      'bt709',
-      '-pix_fmt',
-      'yuv420p',
-      'output.mp4',
-    ]);
-
-    final Uint8List outData = ffmpeg.readFile('output.mp4');
-
-    final jsArray = outData.toJS;
-    final blob = web.Blob([jsArray].toJS, web.BlobPropertyBag(type: 'video/mp4'));
-    final url = web.URL.createObjectURL(blob);
-
-    final anchor = web.HTMLAnchorElement()
-      ..href = url
-      ..download = 'laminar_export_${_qualityName}_${DateTime.now().millisecondsSinceEpoch}.mp4';
-
-    web.document.body?.appendChild(anchor);
-    anchor.click();
-    web.document.body?.removeChild(anchor);
-    web.URL.revokeObjectURL(url);
-
+    _initialized = false;
     return 'Web Download Triggered';
   }
 
   Future<void> dispose() async {
-    _frames.clear();
+    _initialized = false;
   }
 }

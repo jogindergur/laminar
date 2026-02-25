@@ -104,11 +104,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
             : 1.0;
         final ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
 
-        // Use fast native C++ ImageByteFormat.png encoding
-        final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+        // Use direct memory access to extract raw RGBA pixel data instead of CPU-expensive PNG compression
+        final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
         if (byteData == null) throw Exception('Failed to get byte data for frame $i');
 
-        // 2. Send the compressed PNG chunk to the background Isolate to write to disk.
+        // 2. Send the raw RGBA buffer to the exporter
         // A 16ms yield here gives the Flutter UI engine a full timeslice to breathe and stay interactive.
         await exporter.addFrame(byteData.buffer.asUint8List());
         await Future.delayed(const Duration(milliseconds: 16));

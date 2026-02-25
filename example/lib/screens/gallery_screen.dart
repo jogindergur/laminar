@@ -59,6 +59,7 @@ class GalleryScreen extends StatelessWidget {
       composition: const CounterComposition(),
       durationInFrames: 120,
       fps: 30,
+      download: true,
     ),
     CompositionEntry(
       id: 'wave',
@@ -69,6 +70,7 @@ class GalleryScreen extends StatelessWidget {
       composition: const WaveComposition(),
       durationInFrames: 90,
       fps: 30,
+      download: true,
     ),
     CompositionEntry(
       id: 'series-demo',
@@ -79,6 +81,7 @@ class GalleryScreen extends StatelessWidget {
       composition: const SeriesDemoComposition(),
       durationInFrames: 150,
       fps: 30,
+      download: true,
     ),
     CompositionEntry(
       id: 'apple-logo',
@@ -100,6 +103,7 @@ class GalleryScreen extends StatelessWidget {
       composition: const StarbucksLogoComposition(),
       durationInFrames: 150,
       fps: 30,
+      download: true,
     ),
     CompositionEntry(
       id: 'olympic-rings',
@@ -110,6 +114,7 @@ class GalleryScreen extends StatelessWidget {
       composition: const OlympicLogoComposition(),
       durationInFrames: 150,
       fps: 30,
+      download: true,
     ),
     CompositionEntry(
       id: 'trend-chart',
@@ -121,6 +126,7 @@ class GalleryScreen extends StatelessWidget {
       composition: const TrendChartComposition(),
       durationInFrames: 150,
       fps: 30,
+      download: true,
     ),
   ];
 
