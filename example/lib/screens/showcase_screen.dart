@@ -212,12 +212,27 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
 class _ColumnHeaders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(child: _HeaderChip('Without Player', Colors.white24, Icons.block)),
-        const SizedBox(width: 14),
-        Expanded(child: _HeaderChip('With Player', const Color(0xFF6C63FF), Icons.play_circle_outline_rounded)),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 600) {
+          return Row(
+            children: [
+              Expanded(child: _HeaderChip('Without Player', Colors.white24, Icons.block)),
+              const SizedBox(width: 14),
+              Expanded(child: _HeaderChip('With Player', const Color(0xFF6C63FF), Icons.play_circle_outline_rounded)),
+            ],
+          );
+        } else {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _HeaderChip('Without Player', Colors.white24, Icons.block),
+              const SizedBox(height: 10),
+              _HeaderChip('With Player', const Color(0xFF6C63FF), Icons.play_circle_outline_rounded),
+            ],
+          );
+        }
+      },
     );
   }
 }
@@ -310,21 +325,40 @@ class _DualRow extends StatelessWidget {
         const SizedBox(height: 10),
 
         // Two-column layout
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // LEFT — bare widget, no chrome
-            Expanded(
-              child: _BarePane(aspectRatio: aspectRatio, composition: comp),
-            ),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth > 600) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // LEFT — bare widget, no chrome
+                  Expanded(
+                    child: _BarePane(aspectRatio: aspectRatio, composition: comp),
+                  ),
 
-            const SizedBox(width: 14),
+                  const SizedBox(width: 14),
 
-            // RIGHT — player card with controls
-            Expanded(
-              child: _PlayerPane(accent: accent, aspectRatio: aspectRatio, ctrl: ctrl, composition: compPlayer),
-            ),
-          ],
+                  // RIGHT — player card with controls
+                  Expanded(
+                    child: _PlayerPane(accent: accent, aspectRatio: aspectRatio, ctrl: ctrl, composition: compPlayer),
+                  ),
+                ],
+              );
+            } else {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // TOP — bare widget, no chrome
+                  _BarePane(aspectRatio: aspectRatio, composition: comp),
+
+                  const SizedBox(height: 20),
+
+                  // BOTTOM — player card with controls
+                  _PlayerPane(accent: accent, aspectRatio: aspectRatio, ctrl: ctrl, composition: compPlayer),
+                ],
+              );
+            }
+          },
         ),
       ],
     );

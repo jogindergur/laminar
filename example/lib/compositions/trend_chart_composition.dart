@@ -214,65 +214,71 @@ class TrendChartComposition extends StatelessWidget {
         ),
 
         // Chart area
-        Padding(
-          padding: const EdgeInsets.fromLTRB(56, 52, 32, 52),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title + legend row
-              Transform.translate(
-                offset: Offset(0, titleOffset),
-                child: Opacity(
-                  opacity: titleOpacity,
-                  child: Row(
-                    children: [
-                      Text(
-                        dataset.title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 2.5,
-                        ),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final isMobile = constraints.maxWidth < 600;
+            final padding = isMobile
+                ? const EdgeInsets.fromLTRB(36, 24, 16, 24)
+                : const EdgeInsets.fromLTRB(56, 52, 32, 52);
+            return Padding(
+              padding: padding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title + legend row
+                  Transform.translate(
+                    offset: Offset(0, titleOffset),
+                    child: Opacity(
+                      opacity: titleOpacity,
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        runSpacing: 12,
+                        children: [
+                          Text(
+                            dataset.title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 2.5,
+                            ),
+                          ),
+                          Opacity(
+                            opacity: legendOpacity,
+                            child: Wrap(
+                              spacing: 16,
+                              runSpacing: 8,
+                              children: dataset.series.map((s) => _LegendDot(series: s)).toList(),
+                            ),
+                          ),
+                        ],
                       ),
-                      const Spacer(),
-                      Opacity(
-                        opacity: legendOpacity,
-                        child: Row(
-                          children: dataset.series
-                              .map(
-                                (s) => Padding(
-                                  padding: const EdgeInsets.only(left: 16),
-                                  child: _LegendDot(series: s),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              // Chart canvas
-              Expanded(
-                child: Opacity(
-                  opacity: gridOpacity,
-                  child: CustomPaint(
-                    painter: _TrendChartPainter(
-                      dataset: dataset,
-                      lineProgress: lineProgress,
-                      fillOpacity: fillOpacity,
-                      dotGlow: dotGlow,
                     ),
-                    child: const SizedBox.expand(),
                   ),
-                ),
+
+                  const SizedBox(height: 12),
+
+                  // Chart canvas
+                  Expanded(
+                    child: Opacity(
+                      opacity: gridOpacity,
+                      child: CustomPaint(
+                        painter: _TrendChartPainter(
+                          dataset: dataset,
+                          lineProgress: lineProgress,
+                          fillOpacity: fillOpacity,
+                          dotGlow: dotGlow,
+                          isMobile: isMobile,
+                        ),
+                        child: const SizedBox.expand(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
 
         // Frame watermark
@@ -355,12 +361,14 @@ class _TrendChartPainter extends CustomPainter {
   final double lineProgress;
   final double fillOpacity;
   final double dotGlow;
+  final bool isMobile;
 
   _TrendChartPainter({
     required this.dataset,
     required this.lineProgress,
     required this.fillOpacity,
     required this.dotGlow,
+    this.isMobile = false,
   });
 
   // ── Drawing entry point ─────────────────────────────────────────────────
@@ -369,10 +377,10 @@ class _TrendChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (dataset.series.isEmpty) return;
 
-    const leftPad = 0.0;
-    const rightPad = 8.0;
-    const topPad = 12.0;
-    const bottomPad = 32.0;
+    final leftPad = 0.0;
+    final rightPad = isMobile ? 0.0 : 8.0;
+    final topPad = isMobile ? 8.0 : 12.0;
+    final bottomPad = isMobile ? 20.0 : 32.0;
 
     final chartW = size.width - leftPad - rightPad;
     final chartH = size.height - topPad - bottomPad;
@@ -404,8 +412,8 @@ class _TrendChartPainter extends CustomPainter {
     }
 
     // ── Grid + axes ───────────────────────────────────────────────────────
-    _drawGrid(canvas, size, leftPad, chartW, topPad, chartH, bottomPad, minV, maxV);
-    _drawXLabels(canvas, labels, leftPad, chartW, topPad, chartH);
+    _drawGrid(canvas, size, leftPad, chartW, topPad, chartH, bottomPad, minV, maxV, isMobile);
+    _drawXLabels(canvas, labels, leftPad, chartW, topPad, chartH, isMobile);
 
     // ── Area fills (drawn below lines) ────────────────────────────────────
     if (fillOpacity > 0) {
@@ -441,6 +449,7 @@ class _TrendChartPainter extends CustomPainter {
     double bottomPad,
     double minV,
     double maxV,
+    bool isMobile,
   ) {
     const gridCount = 5;
     final gridPaint = Paint()
@@ -453,25 +462,37 @@ class _TrendChartPainter extends CustomPainter {
 
       final val = maxV - (g / gridCount) * (maxV - minV);
       final label = '${dataset.prefix}${val.toStringAsFixed(0)}${dataset.unit}';
+
+      final labelOffset = isMobile ? -32.0 : -48.0;
+      final labelWidth = isMobile ? 28.0 : 44.0;
+
       _drawText(
         canvas,
         label,
-        Offset(-48, y - 6),
-        const TextStyle(color: Color(0xFF5A5A7A), fontSize: 10, fontWeight: FontWeight.w500),
-        width: 44,
+        Offset(labelOffset, y - 6),
+        TextStyle(color: const Color(0xFF5A5A7A), fontSize: isMobile ? 8 : 10, fontWeight: FontWeight.w500),
+        width: labelWidth,
         align: TextAlign.right,
       );
     }
   }
 
-  void _drawXLabels(Canvas canvas, List<String> labels, double leftPad, double chartW, double topPad, double chartH) {
+  void _drawXLabels(
+    Canvas canvas,
+    List<String> labels,
+    double leftPad,
+    double chartW,
+    double topPad,
+    double chartH,
+    bool isMobile,
+  ) {
     for (int i = 0; i < labels.length; i++) {
       final x = leftPad + (i / (labels.length - 1)) * chartW;
       _drawText(
         canvas,
         labels[i],
-        Offset(x - 20, topPad + chartH + 8),
-        const TextStyle(color: Color(0xFF5A5A7A), fontSize: 10, fontWeight: FontWeight.w500),
+        Offset(x - 20, topPad + chartH + (isMobile ? 4 : 8)),
+        TextStyle(color: const Color(0xFF5A5A7A), fontSize: isMobile ? 8 : 10, fontWeight: FontWeight.w500),
         width: 40,
         align: TextAlign.center,
       );

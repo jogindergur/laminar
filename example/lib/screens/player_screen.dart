@@ -116,7 +116,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   ),
                   const SizedBox(height: 8),
                   // Transport
-                  Row(
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       _IconBtn(icon: Icons.stop_rounded, onTap: _ctrl.stop, color: Colors.white38),
                       const SizedBox(width: 6),
