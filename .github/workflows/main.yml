@@ -1,19 +1,28 @@
 name: Windows Build
 on: [push]
+
 jobs:
   build:
     runs-on: windows-latest
+    # This tells GitHub to run every "run" command inside the example folder
+    defaults:
+      run:
+        working-directory: ./example 
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4 # Updated to v4
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          cache: true # Speeds up future builds
+      
       - run: flutter config --enable-windows-desktop
       - run: flutter pub get
-      - run: cd ./example
       - run: flutter build windows
+      
       - name: Upload Build
-        uses: actions/upload-artifact@v7.0.0
+        uses: actions/upload-artifact@v4 # Updated to v4
         with:
           name: windows-exe
-          path: build/windows/x64/runner/Release/
+          # Note: The path is relative to the working-directory set above
+          path: example/build/windows/x64/runner/Release/
