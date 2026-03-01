@@ -158,16 +158,18 @@ class GalleryScreen extends StatelessWidget {
           const SizedBox(height: 8),
           // Grid of composition cards
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 360,
-                mainAxisExtent: 200,
-                crossAxisSpacing: 14,
-                mainAxisSpacing: 14,
+            child: SafeArea(
+              child: GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 360,
+                  mainAxisExtent: 200,
+                  crossAxisSpacing: 14,
+                  mainAxisSpacing: 14,
+                ),
+                itemCount: _compositions.length,
+                itemBuilder: (context, i) => _CompositionCard(entry: _compositions[i]),
               ),
-              itemCount: _compositions.length,
-              itemBuilder: (context, i) => _CompositionCard(entry: _compositions[i]),
             ),
           ),
         ],
