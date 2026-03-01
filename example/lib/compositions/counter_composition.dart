@@ -50,12 +50,7 @@ class CounterComposition extends StatelessWidget {
             height: 300,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  accent.withOpacity(0.15),
-                  Colors.transparent,
-                ],
-              ),
+              gradient: RadialGradient(colors: [accent.withOpacity(0.15), Colors.transparent]),
             ),
           ),
         ),
@@ -70,10 +65,7 @@ class CounterComposition extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   CustomPaint(
-                    painter: _RingPainter(
-                      progress: ringProgress,
-                      color: accent,
-                    ),
+                    painter: _RingPainter(progress: ringProgress, color: accent),
                   ),
                   Center(
                     child: Column(
@@ -86,19 +78,13 @@ class CounterComposition extends StatelessWidget {
                             fontSize: 72,
                             fontWeight: FontWeight.w800,
                             height: 1,
-                            shadows: [
-                              Shadow(color: accent.withOpacity(0.6), blurRadius: 30),
-                            ],
+                            shadows: [Shadow(color: accent.withOpacity(0.6), blurRadius: 30)],
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           '%',
-                          style: TextStyle(
-                            color: accent,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: TextStyle(color: accent, fontSize: 22, fontWeight: FontWeight.w700),
                         ),
                       ],
                     ),
@@ -116,11 +102,7 @@ class CounterComposition extends StatelessWidget {
           child: Text(
             'frame $frame  •  useCurrentFrame() + interpolate()',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.35),
-              fontSize: 12,
-              letterSpacing: 0.4,
-            ),
+            style: TextStyle(color: Colors.white.withOpacity(0.35), fontSize: 12, letterSpacing: 0.4),
           ),
         ),
       ],
@@ -165,6 +147,5 @@ class _RingPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_RingPainter old) =>
-      old.progress != progress || old.color != color;
+  bool shouldRepaint(_RingPainter old) => old.progress != progress || old.color != color;
 }
