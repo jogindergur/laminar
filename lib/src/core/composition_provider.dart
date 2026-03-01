@@ -12,11 +12,6 @@ import '../models/video_config.dart';
 /// [useVideoConfig] / [useCurrentFrame] helpers instead of accessing this
 /// widget directly.
 class CompositionProvider extends InheritedWidget {
-  /// The active [VideoConfig] for this composition.
-  final VideoConfig config;
-
-  /// Zero-based index of the frame currently being rendered.
-  final int frame;
 
   const CompositionProvider({
     super.key,
@@ -24,6 +19,11 @@ class CompositionProvider extends InheritedWidget {
     required this.frame,
     required super.child,
   });
+  /// The active [VideoConfig] for this composition.
+  final VideoConfig config;
+
+  /// Zero-based index of the frame currently being rendered.
+  final int frame;
 
   // ── Static accessors ──────────────────────────────────────────────────────
 

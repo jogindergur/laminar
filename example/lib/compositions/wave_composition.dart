@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:laminar/laminar.dart';
 
@@ -39,11 +40,7 @@ class WaveComposition extends StatelessWidget {
         ),
         // Wave canvas
         CustomPaint(
-          painter: _WavePainter(
-            frame: frame,
-            amplitude: amplitude,
-            totalFrames: config.durationInFrames,
-          ),
+          painter: _WavePainter(frame: frame, amplitude: amplitude, totalFrames: config.durationInFrames),
         ),
         // Overlay text
         Positioned(
@@ -56,7 +53,7 @@ class WaveComposition extends StatelessWidget {
                 'LAMINAR WAVE',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: const Color(0xFFFF6584).withOpacity(amplitude),
+                  color: const Color(0xFFFF6584).withValues(alpha: amplitude),
                   fontSize: 14,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 5,
@@ -66,10 +63,7 @@ class WaveComposition extends StatelessWidget {
               Text(
                 'frame $frame / ${config.durationInFrames}',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.3),
-                  fontSize: 11,
-                ),
+                style: TextStyle(color: Colors.white.withValues(alpha: 0.3), fontSize: 11),
               ),
             ],
           ),
@@ -80,15 +74,11 @@ class WaveComposition extends StatelessWidget {
 }
 
 class _WavePainter extends CustomPainter {
+
+  _WavePainter({required this.frame, required this.amplitude, required this.totalFrames});
   final int frame;
   final double amplitude;
   final int totalFrames;
-
-  _WavePainter({
-    required this.frame,
-    required this.amplitude,
-    required this.totalFrames,
-  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -97,17 +87,17 @@ class _WavePainter extends CustomPainter {
 
     // Draw 5 layered waves with different frequencies and colours
     final waves = [
-      (freq: 2.0, amp: 0.20, phase: 0.0,  color: const Color(0xFFFF6584)),
-      (freq: 3.0, amp: 0.14, phase: 0.5,  color: const Color(0xFF6C63FF)),
-      (freq: 5.0, amp: 0.09, phase: 1.2,  color: const Color(0xFF00C9A7)),
-      (freq: 7.0, amp: 0.06, phase: 2.1,  color: const Color(0xFFFFBE0B)),
-      (freq: 1.5, amp: 0.25, phase: 0.8,  color: Colors.white),
+      (freq: 2.0, amp: 0.20, phase: 0.0, color: const Color(0xFFFF6584)),
+      (freq: 3.0, amp: 0.14, phase: 0.5, color: const Color(0xFF6C63FF)),
+      (freq: 5.0, amp: 0.09, phase: 1.2, color: const Color(0xFF00C9A7)),
+      (freq: 7.0, amp: 0.06, phase: 2.1, color: const Color(0xFFFFBE0B)),
+      (freq: 1.5, amp: 0.25, phase: 0.8, color: Colors.white),
     ];
 
     for (final w in waves) {
       final path = Path();
       final paint = Paint()
-        ..color = w.color.withOpacity(0.55 * amplitude)
+        ..color = w.color.withValues(alpha: 0.55 * amplitude)
         ..strokeWidth = 1.8
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round;
@@ -115,11 +105,8 @@ class _WavePainter extends CustomPainter {
       for (int i = 0; i <= size.width.toInt(); i++) {
         final x = i.toDouble();
         final nx = x / size.width;
-        final y = cy +
-            math.sin(nx * w.freq * 2 * math.pi + w.phase + t * 2 * math.pi) *
-                size.height *
-                w.amp *
-                amplitude;
+        final y =
+            cy + math.sin(nx * w.freq * 2 * math.pi + w.phase + t * 2 * math.pi) * size.height * w.amp * amplitude;
 
         if (i == 0) {
           path.moveTo(x, y);
@@ -131,27 +118,19 @@ class _WavePainter extends CustomPainter {
     }
 
     // Bar visualiser across the bottom
-    final barCount = 48;
+    const barCount = 48;
     final barWidth = size.width / barCount;
     for (int i = 0; i < barCount; i++) {
       final barT = i / barCount;
-      final height = math.sin(barT * math.pi * 3 + t * math.pi * 4).abs() *
-          size.height *
-          0.28 *
-          amplitude;
+      final height = math.sin(barT * math.pi * 3 + t * math.pi * 4).abs() * size.height * 0.28 * amplitude;
 
       final barPaint = Paint()
-        ..color = const Color(0xFFFF6584).withOpacity(0.45 * amplitude)
+        ..color = const Color(0xFFFF6584).withValues(alpha: 0.45 * amplitude)
         ..style = PaintingStyle.fill;
 
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-          Rect.fromLTWH(
-            i * barWidth + 1,
-            size.height - height - 12,
-            barWidth - 2,
-            height,
-          ),
+          Rect.fromLTWH(i * barWidth + 1, size.height - height - 12, barWidth - 2, height),
           const Radius.circular(2),
         ),
         barPaint,
@@ -160,6 +139,5 @@ class _WavePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_WavePainter old) =>
-      old.frame != frame || old.amplitude != amplitude;
+  bool shouldRepaint(_WavePainter old) => old.frame != frame || old.amplitude != amplitude;
 }

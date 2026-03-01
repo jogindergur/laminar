@@ -26,7 +26,7 @@ void main() {
       expect(byteData, isNotNull);
 
       // Center pixel should be red (RGBA: 255, 0, 0, 255)
-      final offset = (50 * 100 + 50) * 4;
+      const offset = (50 * 100 + 50) * 4;
       expect(byteData!.getUint8(offset), 255); // R
       expect(byteData.getUint8(offset + 1), 0); // G
       expect(byteData.getUint8(offset + 2), 0); // B

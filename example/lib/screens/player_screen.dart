@@ -9,8 +9,8 @@ import 'gallery_screen.dart';
 /// that the same controller attached to a widget can also be driven from
 /// outside the widget tree (e.g. from this screen's own UI controls).
 class PlayerScreen extends StatefulWidget {
-  final CompositionEntry entry;
   const PlayerScreen({super.key, required this.entry});
+  final CompositionEntry entry;
 
   @override
   State<PlayerScreen> createState() => _PlayerScreenState();
@@ -210,10 +210,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
 }
 
 class _IconBtn extends StatelessWidget {
+  const _IconBtn({required this.icon, required this.onTap, required this.color});
   final IconData icon;
   final VoidCallback onTap;
   final Color color;
-  const _IconBtn({required this.icon, required this.onTap, required this.color});
 
   @override
   Widget build(BuildContext context) {

@@ -162,18 +162,18 @@ List<double>? _intersectAngles(Offset ca, Offset cb, double r) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _OlympicPainter extends CustomPainter {
+
+  const _OlympicPainter({required this.progresses, required this.glow, required this.allDone});
   final List<double> progresses; // [blue, yellow, black, green, red]
   final double glow;
   final bool allDone;
 
-  const _OlympicPainter({required this.progresses, required this.glow, required this.allDone});
-
   // ── Constants ──────────────────────────────────────────────────────────────
 
-  static const _W = 700.0;
-  static const _H = 300.0;
-  static const _R = 75.0;
-  static const _SW = 13.0;
+  static const _w = 700.0;
+  static const _h = 300.0;
+  static const _r = 75.0;
+  static const _sw = 13.0;
 
   // 0=Blue(top)  1=Yellow(btm)  2=Black(top)  3=Green(btm)  4=Red(top)
   static const _cx = [100.0, 218.0, 336.0, 454.0, 572.0];
@@ -203,7 +203,7 @@ class _OlympicPainter extends CustomPainter {
 
   Paint _stroke(Color c) => Paint()
     ..style = PaintingStyle.stroke
-    ..strokeWidth = _SW
+    ..strokeWidth = _sw
     ..strokeCap = StrokeCap.butt
     ..color = c;
 
@@ -211,10 +211,10 @@ class _OlympicPainter extends CustomPainter {
   void _drawRing(Canvas canvas, int i, double p) {
     if (p <= 0) return;
     if (p >= 1.0) {
-      canvas.drawCircle(_c(i), _R, _stroke(_colors[i]));
+      canvas.drawCircle(_c(i), _r, _stroke(_colors[i]));
     } else {
       canvas.drawArc(
-        Rect.fromCircle(center: _c(i), radius: _R),
+        Rect.fromCircle(center: _c(i), radius: _r),
         -math.pi / 2,
         p * 2 * math.pi,
         false,
@@ -228,7 +228,7 @@ class _OlympicPainter extends CustomPainter {
   void _crossArc(Canvas canvas, int ri, double centerAngle) {
     const halfSpan = 0.22; // ~12.5° — enough to cover the crossing cleanly
     canvas.drawArc(
-      Rect.fromCircle(center: _c(ri), radius: _R),
+      Rect.fromCircle(center: _c(ri), radius: _r),
       centerAngle - halfSpan,
       halfSpan * 2,
       false,
@@ -252,8 +252,8 @@ class _OlympicPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final scale = math.min(size.width / _W, size.height / _H);
-    canvas.translate((size.width - _W * scale) / 2, (size.height - _H * scale) / 2);
+    final scale = math.min(size.width / _w, size.height / _h);
+    canvas.translate((size.width - _w * scale) / 2, (size.height - _h * scale) / 2);
     canvas.scale(scale);
 
     // Glow behind everything
@@ -261,10 +261,10 @@ class _OlympicPainter extends CustomPainter {
       for (int i = 0; i < 5; i++) {
         canvas.drawCircle(
           _c(i),
-          _R,
+          _r,
           Paint()
             ..style = PaintingStyle.stroke
-            ..strokeWidth = _SW + 8
+            ..strokeWidth = _sw + 8
             ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5)
             ..color = _colors[i].withValues(alpha: 0.18 * glow),
         );
@@ -292,8 +292,8 @@ class _OlympicPainter extends CustomPainter {
       final pB = progresses[b];
       if (pA <= 0 || pB <= 0) continue; // neither ring visible yet
 
-      final angA = _intersectAngles(_c(a), _c(b), _R);
-      final angB = _intersectAngles(_c(b), _c(a), _R);
+      final angA = _intersectAngles(_c(a), _c(b), _r);
+      final angB = _intersectAngles(_c(b), _c(a), _r);
       if (angA == null || angB == null) continue;
 
       // angA[0] = upper crossing angle on ring A

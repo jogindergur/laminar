@@ -16,6 +16,14 @@ import 'composition_provider.dart';
 /// )
 /// ```
 class Sequence extends StatelessWidget {
+
+  const Sequence({
+    super.key,
+    required this.from,
+    this.durationInFrames,
+    required this.child,
+    this.layout = false,
+  }) : assert(from >= 0, 'from must be >= 0');
   /// The frame (relative to the parent composition) at which this sequence
   /// becomes visible. Must be >= 0.
   final int from;
@@ -34,14 +42,6 @@ class Sequence extends StatelessWidget {
   ///
   /// Defaults to `false` — the child is fully unmounted when inactive.
   final bool layout;
-
-  const Sequence({
-    super.key,
-    required this.from,
-    this.durationInFrames,
-    required this.child,
-    this.layout = false,
-  }) : assert(from >= 0, 'from must be >= 0');
 
   @override
   Widget build(BuildContext context) {

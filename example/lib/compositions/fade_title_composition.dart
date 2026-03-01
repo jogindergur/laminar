@@ -60,11 +60,7 @@ class FadeTitleComposition extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                HSLColor.fromAHSL(1, (frame * 1.2) % 360, 0.7, 0.08)
-                    .toColor(),
-                const Color(0xFF0D0D1A),
-              ],
+              colors: [HSLColor.fromAHSL(1, (frame * 1.2) % 360, 0.7, 0.08).toColor(), const Color(0xFF0D0D1A)],
             ),
           ),
         ),
@@ -81,13 +77,11 @@ class FadeTitleComposition extends StatelessWidget {
                 children: [
                   // Frame counter badge
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF6C63FF).withOpacity(0.2),
+                      color: const Color(0xFF6C63FF).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                          color: const Color(0xFF6C63FF).withOpacity(0.5)),
+                      border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
                     ),
                     child: Text(
                       '${config.id}  •  frame $frame / ${config.durationInFrames}',
@@ -119,7 +113,7 @@ class FadeTitleComposition extends StatelessWidget {
                     child: Text(
                       'interpolate() + LaminarEasing.easeOutCubic',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.55),
+                        color: Colors.white.withValues(alpha: 0.55),
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
                         letterSpacing: 0.2,
@@ -135,8 +129,7 @@ class FadeTitleComposition extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: frame / config.durationInFrames,
                         backgroundColor: Colors.white12,
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                            Color(0xFF6C63FF)),
+                        valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF6C63FF)),
                         minHeight: 4,
                       ),
                     ),
@@ -155,7 +148,7 @@ class _GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.04)
+      ..color = Colors.white.withValues(alpha: 0.04)
       ..strokeWidth = 1;
 
     const spacing = 40.0;

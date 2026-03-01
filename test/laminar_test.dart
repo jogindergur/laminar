@@ -156,19 +156,19 @@ void main() {
     const baseConfig = VideoConfig(id: 'opts-test', width: 1280, height: 720, fps: 30, durationInFrames: 60);
 
     test('effectiveFrameRange covers full composition by default', () {
-      final opts = RenderMediaOptions(composition: baseConfig);
+      const opts = RenderMediaOptions(composition: baseConfig);
       expect(opts.effectiveFrameRange.start, 0);
       expect(opts.effectiveFrameRange.end, 59);
       expect(opts.effectiveFrameRange.length, 60);
     });
 
     test('effectiveFrameRange respects explicit frameRange', () {
-      final opts = RenderMediaOptions(composition: baseConfig, frameRange: const FrameRange(start: 10, end: 29));
+      const opts = RenderMediaOptions(composition: baseConfig, frameRange: FrameRange(start: 10, end: 29));
       expect(opts.effectiveFrameRange.length, 20);
     });
 
     test('default codec is h264', () {
-      final opts = RenderMediaOptions(composition: baseConfig);
+      const opts = RenderMediaOptions(composition: baseConfig);
       expect(opts.codec, Codec.h264);
     });
   });

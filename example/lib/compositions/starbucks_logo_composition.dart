@@ -183,11 +183,11 @@ class StarbucksLogoComposition extends StatelessWidget {
 // The white circle (st0) is drawn first, then the green siren + detail (st1).
 // ─────────────────────────────────────────────────────────────────────────────
 class _StarbucksLogoPainter extends CustomPainter {
+
+  const _StarbucksLogoPainter({required this.rotation, required this.glowRadius, required this.opacity});
   final double rotation;
   final double glowRadius;
   final double opacity;
-
-  const _StarbucksLogoPainter({required this.rotation, required this.glowRadius, required this.opacity});
 
   // Build white circle path (st0)
   Path _whitePath(double w, double h) {

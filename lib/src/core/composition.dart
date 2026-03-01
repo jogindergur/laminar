@@ -45,6 +45,17 @@ import 'laminar_controller.dart';
 /// [Composition] fills its parent by default. Wrap it in a [SizedBox] or
 /// [AspectRatio] to constrain it — just like any other widget.
 class Composition<T> extends StatefulWidget {
+
+  const Composition({
+    super.key,
+    required this.config,
+    required this.defaultProps,
+    required this.serialize,
+    required this.component,
+    this.controller,
+    this.autoPlay = false,
+    this.loop = false,
+  });
   // ── Identity ──────────────────────────────────────────────────────────────
 
   /// The master metadata entity describing this composition's render context.
@@ -82,17 +93,6 @@ class Composition<T> extends StatefulWidget {
   ///
   /// Only applies to the *internal* controller.
   final bool loop;
-
-  const Composition({
-    super.key,
-    required this.config,
-    required this.defaultProps,
-    required this.serialize,
-    required this.component,
-    this.controller,
-    this.autoPlay = false,
-    this.loop = false,
-  });
 
   @override
   State<Composition<T>> createState() => _CompositionState<T>();

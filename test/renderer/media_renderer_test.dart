@@ -18,7 +18,7 @@ void main() {
     );
 
     test('renders multiple frames and emits progress', () async {
-      final options = RenderMediaOptions(composition: config, outputLocation: '/tmp/output.mp4', concurrency: 2);
+      const options = RenderMediaOptions(composition: config, outputLocation: '/tmp/output.mp4', concurrency: 2);
 
       final renderer = MediaRenderer(options: options);
 

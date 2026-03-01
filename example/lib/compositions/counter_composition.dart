@@ -50,7 +50,7 @@ class CounterComposition extends StatelessWidget {
             height: 300,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [accent.withOpacity(0.15), Colors.transparent]),
+              gradient: RadialGradient(colors: [accent.withValues(alpha: 0.15), Colors.transparent]),
             ),
           ),
         ),
@@ -78,7 +78,7 @@ class CounterComposition extends StatelessWidget {
                             fontSize: 72,
                             fontWeight: FontWeight.w800,
                             height: 1,
-                            shadows: [Shadow(color: accent.withOpacity(0.6), blurRadius: 30)],
+                            shadows: [Shadow(color: accent.withValues(alpha: 0.6), blurRadius: 30)],
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -102,7 +102,7 @@ class CounterComposition extends StatelessWidget {
           child: Text(
             'frame $frame  •  useCurrentFrame() + interpolate()',
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white.withOpacity(0.35), fontSize: 12, letterSpacing: 0.4),
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.35), fontSize: 12, letterSpacing: 0.4),
           ),
         ),
       ],
@@ -111,10 +111,10 @@ class CounterComposition extends StatelessWidget {
 }
 
 class _RingPainter extends CustomPainter {
-  final double progress;
-  final Color color;
 
   _RingPainter({required this.progress, required this.color});
+  final double progress;
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {

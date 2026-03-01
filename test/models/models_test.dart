@@ -13,11 +13,11 @@ void main() {
     });
 
     test('RenderMediaProgress initializes and stringifies correctly', () {
-      final progress = RenderMediaProgress(
+      const progress = RenderMediaProgress(
         renderedFrames: 30,
         totalFrames: 60,
         progress: 0.5,
-        slowFrames: const [SlowFrame(frame: 10, timeMs: 500)],
+        slowFrames: [SlowFrame(frame: 10, timeMs: 500)],
         estimatedRemainingMs: 3000,
       );
 
@@ -39,7 +39,7 @@ void main() {
     });
 
     test('RenderMediaProgress isComplete returns true when done', () {
-      final complete = RenderMediaProgress(renderedFrames: 100, totalFrames: 100, progress: 1.0);
+      const complete = RenderMediaProgress(renderedFrames: 100, totalFrames: 100, progress: 1.0);
       expect(complete.isComplete, true);
     });
 

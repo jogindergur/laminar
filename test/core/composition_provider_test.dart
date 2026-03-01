@@ -48,7 +48,7 @@ void main() {
     });
 
     test('withFrame creates a copy with updated frame', () {
-      final provider = CompositionProvider(config: config, frame: 10, child: const SizedBox());
+      const provider = CompositionProvider(config: config, frame: 10, child: SizedBox());
 
       final updated = provider.withFrame(20);
       expect(updated.frame, 20);

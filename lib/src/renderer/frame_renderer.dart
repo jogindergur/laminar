@@ -3,8 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import '../models/video_config.dart';
 import '../core/composition_provider.dart';
+import '../models/video_config.dart';
 
 /// Responsible for rasterising a single frame of a composition into a
 /// [ui.Image].

@@ -37,13 +37,13 @@ import 'package:flutter/foundation.dart';
 /// When no controller is passed to [Composition], a default one is created
 /// and owned internally — the composition simply auto-plays on build.
 class LaminarController extends ChangeNotifier {
-  int _durationInFrames = 0;
-  int _frame = 0;
-  PlaybackStatus _status = PlaybackStatus.idle;
 
   LaminarController({int initialFrame = 0}) : assert(initialFrame >= 0) {
     _frame = initialFrame;
   }
+  int _durationInFrames = 0;
+  int _frame = 0;
+  PlaybackStatus _status = PlaybackStatus.idle;
 
   /// Called by `Composition` when this controller is attached.
   /// This provides the controller with the necessary bounds for playback.

@@ -27,6 +27,8 @@ import 'frame_renderer.dart';
 /// final result = await renderer.render();
 /// ```
 class MediaRenderer {
+
+  MediaRenderer({required this.options});
   final RenderMediaOptions options;
 
   final StreamController<RenderMediaProgress> _progressController = StreamController<RenderMediaProgress>.broadcast();
@@ -35,8 +37,6 @@ class MediaRenderer {
   ///
   /// Subscribe before calling [render] to receive all events.
   Stream<RenderMediaProgress> get onProgress => _progressController.stream;
-
-  MediaRenderer({required this.options});
 
   /// Starts the render and resolves when all frames have been encoded.
   ///
@@ -133,9 +133,9 @@ class MediaRenderer {
 
 /// Thrown when the render pipeline encounters a fatal error.
 class RenderException implements Exception {
+  const RenderException(this.message, {this.cause});
   final String message;
   final Object? cause;
-  const RenderException(this.message, {this.cause});
 
   @override
   String toString() =>

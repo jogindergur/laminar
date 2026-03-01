@@ -5,20 +5,6 @@ import 'slow_frame.dart';
 /// Equivalent to Remotion's `onProgress` callback payload, but surfaced as a
 /// Dart [Stream] for idiomatic usage.
 class RenderMediaProgress {
-  /// Number of frames rendered so far.
-  final int renderedFrames;
-
-  /// Total number of frames to render.
-  final int totalFrames;
-
-  /// Completion ratio in the range [0.0, 1.0].
-  final double progress;
-
-  /// Frames that exceeded the slow-frame warning threshold (if any).
-  final List<SlowFrame> slowFrames;
-
-  /// Estimated milliseconds remaining, or `null` if not yet computable.
-  final int? estimatedRemainingMs;
 
   const RenderMediaProgress({
     required this.renderedFrames,
@@ -36,6 +22,20 @@ class RenderMediaProgress {
       progress: 0.0,
     );
   }
+  /// Number of frames rendered so far.
+  final int renderedFrames;
+
+  /// Total number of frames to render.
+  final int totalFrames;
+
+  /// Completion ratio in the range [0.0, 1.0].
+  final double progress;
+
+  /// Frames that exceeded the slow-frame warning threshold (if any).
+  final List<SlowFrame> slowFrames;
+
+  /// Estimated milliseconds remaining, or `null` if not yet computable.
+  final int? estimatedRemainingMs;
 
   /// Returns `true` if all frames have been rendered.
   bool get isComplete => renderedFrames >= totalFrames;

@@ -81,7 +81,7 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
         ),
         actions: [
           TextButton.icon(
-            onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const GalleryScreen())),
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const GalleryScreen())),
             icon: const Icon(Icons.grid_view_rounded, size: 15),
             label: const Text('Gallery'),
             style: TextButton.styleFrom(foregroundColor: Colors.white54),
@@ -215,20 +215,20 @@ class _ColumnHeaders extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 600) {
-          return Row(
+          return const Row(
             children: [
               Expanded(child: _HeaderChip('Without Player', Colors.white24, Icons.block)),
-              const SizedBox(width: 14),
-              Expanded(child: _HeaderChip('With Player', const Color(0xFF6C63FF), Icons.play_circle_outline_rounded)),
+              SizedBox(width: 14),
+              Expanded(child: _HeaderChip('With Player', Color(0xFF6C63FF), Icons.play_circle_outline_rounded)),
             ],
           );
         } else {
-          return Column(
+          return const Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _HeaderChip('Without Player', Colors.white24, Icons.block),
-              const SizedBox(height: 10),
-              _HeaderChip('With Player', const Color(0xFF6C63FF), Icons.play_circle_outline_rounded),
+              SizedBox(height: 10),
+              _HeaderChip('With Player', Color(0xFF6C63FF), Icons.play_circle_outline_rounded),
             ],
           );
         }
@@ -238,10 +238,10 @@ class _ColumnHeaders extends StatelessWidget {
 }
 
 class _HeaderChip extends StatelessWidget {
+  const _HeaderChip(this.label, this.color, this.icon);
   final String label;
   final Color color;
   final IconData icon;
-  const _HeaderChip(this.label, this.color, this.icon);
 
   @override
   Widget build(BuildContext context) {
@@ -272,14 +272,6 @@ class _HeaderChip extends StatelessWidget {
 /// Shows one composition in two columns — bare left, player card right.
 /// Both share [ctrl] so they stay perfectly in sync.
 class _DualRow extends StatelessWidget {
-  final String label;
-  final String sub;
-  final Color accent;
-  final double aspectRatio;
-  final LaminarController ctrl;
-  final VideoConfig config;
-  final Widget child;
-
   const _DualRow({
     required this.label,
     required this.sub,
@@ -289,6 +281,13 @@ class _DualRow extends StatelessWidget {
     required this.config,
     required this.child,
   });
+  final String label;
+  final String sub;
+  final Color accent;
+  final double aspectRatio;
+  final LaminarController ctrl;
+  final VideoConfig config;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -368,9 +367,9 @@ class _DualRow extends StatelessWidget {
 // ── Bare pane (left) ──────────────────────────────────────────────────────────
 
 class _BarePane extends StatelessWidget {
+  const _BarePane({required this.aspectRatio, required this.composition});
   final double aspectRatio;
   final Widget composition;
-  const _BarePane({required this.aspectRatio, required this.composition});
 
   @override
   Widget build(BuildContext context) {
@@ -382,12 +381,12 @@ class _BarePane extends StatelessWidget {
           child: AspectRatio(aspectRatio: aspectRatio, child: composition),
         ),
         const SizedBox(height: 6),
-        Row(
+        const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.block, size: 10, color: Colors.white24),
-            const SizedBox(width: 5),
-            const Text(
+            Icon(Icons.block, size: 10, color: Colors.white24),
+            SizedBox(width: 5),
+            Text(
               'Without Player, working as standalone widget.',
               style: TextStyle(color: Colors.white30, fontSize: 10, fontWeight: FontWeight.w500, letterSpacing: 0.4),
             ),
@@ -401,11 +400,11 @@ class _BarePane extends StatelessWidget {
 // ── Player pane (right) ───────────────────────────────────────────────────────
 
 class _PlayerPane extends StatefulWidget {
+  const _PlayerPane({required this.aspectRatio, required this.accent, required this.ctrl, required this.composition});
   final double aspectRatio;
   final Color accent;
   final LaminarController ctrl;
   final Widget composition;
-  const _PlayerPane({required this.aspectRatio, required this.accent, required this.ctrl, required this.composition});
 
   @override
   State<_PlayerPane> createState() => _PlayerPaneState();
@@ -505,9 +504,9 @@ class _PlayerPaneState extends State<_PlayerPane> {
 // ── Micro-widgets ─────────────────────────────────────────────────────────────
 
 class _SeekBar extends StatelessWidget {
+  const _SeekBar({required this.ctrl, required this.accent});
   final LaminarController ctrl;
   final Color accent;
-  const _SeekBar({required this.ctrl, required this.accent});
 
   @override
   Widget build(BuildContext context) {
@@ -540,10 +539,10 @@ class _SeekBar extends StatelessWidget {
 }
 
 class _TBtn extends StatelessWidget {
+  const _TBtn({required this.icon, required this.onTap, required this.color});
   final IconData icon;
   final VoidCallback onTap;
   final Color color;
-  const _TBtn({required this.icon, required this.onTap, required this.color});
 
   @override
   Widget build(BuildContext context) {

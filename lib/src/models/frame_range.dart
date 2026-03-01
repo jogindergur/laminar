@@ -3,11 +3,6 @@
 /// Both [start] and [end] are zero-based frame indices.
 /// Equivalent to Remotion's `frameRange` option.
 class FrameRange {
-  /// First frame index to render (inclusive, 0-based).
-  final int start;
-
-  /// Last frame index to render (inclusive, 0-based).
-  final int end;
 
   const FrameRange({required this.start, required this.end})
       : assert(start >= 0, 'start must be >= 0'),
@@ -15,6 +10,11 @@ class FrameRange {
 
   /// A convenience constructor to render a single frame.
   const FrameRange.single(int frame) : this(start: frame, end: frame);
+  /// First frame index to render (inclusive, 0-based).
+  final int start;
+
+  /// Last frame index to render (inclusive, 0-based).
+  final int end;
 
   /// Total number of frames in this range.
   int get length => end - start + 1;

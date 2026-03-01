@@ -7,6 +7,17 @@ import 'video_config.dart';
 /// Mirrors Remotion's `RenderMediaOptions` TypeScript type, mapped to idiomatic
 /// Dart nominal types (no dynamic Zod schema injection).
 class RenderMediaOptions {
+
+  const RenderMediaOptions({
+    required this.composition,
+    this.outputLocation,
+    this.codec = Codec.h264,
+    this.frameRange,
+    this.concurrency,
+    this.preferLossless = false,
+    this.pixelFormat = 'yuv420p',
+    this.slowFrameThresholdMs = 1000,
+  });
   /// The [VideoConfig] of the composition to render.
   final VideoConfig composition;
 
@@ -39,17 +50,6 @@ class RenderMediaOptions {
   /// Number of milliseconds a single frame may take before it is recorded as
   /// a [SlowFrame]. Set to `null` to disable slow-frame tracking.
   final int? slowFrameThresholdMs;
-
-  const RenderMediaOptions({
-    required this.composition,
-    this.outputLocation,
-    this.codec = Codec.h264,
-    this.frameRange,
-    this.concurrency,
-    this.preferLossless = false,
-    this.pixelFormat = 'yuv420p',
-    this.slowFrameThresholdMs = 1000,
-  });
 
   /// The effective [FrameRange] — falls back to the full composition range.
   FrameRange get effectiveFrameRange => frameRange ?? FrameRange(start: 0, end: composition.durationInFrames - 1);

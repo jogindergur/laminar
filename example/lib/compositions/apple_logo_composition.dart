@@ -170,11 +170,11 @@ class AppleLogoComposition extends StatelessWidget {
 }
 
 class _AppleLogoPainter extends CustomPainter {
+
+  const _AppleLogoPainter({required this.shimmerHue, required this.glowRadius, required this.opacity});
   final double shimmerHue;
   final double glowRadius;
   final double opacity;
-
-  const _AppleLogoPainter({required this.shimmerHue, required this.glowRadius, required this.opacity});
 
   Path _buildPath(double w, double h) {
     // Original bounding box is roughly 814.1 x 1000
@@ -286,8 +286,8 @@ class _AppleLogoPainter extends CustomPainter {
 // Twinkling starfield
 // ─────────────────────────────────────────────────────────────────────────────
 class _StarfieldPainter extends CustomPainter {
-  final int frame;
   _StarfieldPainter({required this.frame});
+  final int frame;
 
   static final _stars = List.generate(80, (i) {
     final r = math.Random(i * 7919);

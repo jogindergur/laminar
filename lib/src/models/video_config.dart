@@ -6,6 +6,35 @@ import 'codec.dart';
 /// It is propagated down the widget tree via [CompositionProvider] and
 /// accessed via [useVideoConfig].
 class VideoConfig {
+
+  const VideoConfig({
+    required this.id,
+    required this.width,
+    required this.height,
+    required this.fps,
+    required this.durationInFrames,
+    this.defaultProps = const {},
+    this.defaultCodec,
+  })  : assert(width > 0, 'width must be positive'),
+        assert(height > 0, 'height must be positive'),
+        assert(fps > 0, 'fps must be positive'),
+        assert(durationInFrames > 0, 'durationInFrames must be positive');
+
+  /// Deserializes a [VideoConfig] from a JSON map.
+  factory VideoConfig.fromJson(Map<String, dynamic> json) {
+    return VideoConfig(
+      id: json['id'] as String,
+      width: json['width'] as int,
+      height: json['height'] as int,
+      fps: json['fps'] as int,
+      durationInFrames: json['durationInFrames'] as int,
+      defaultProps:
+          (json['defaultProps'] as Map<String, dynamic>?) ?? const {},
+      defaultCodec: json['defaultCodec'] != null
+          ? Codec.values.byName(json['defaultCodec'] as String)
+          : null,
+    );
+  }
   /// Unique identifier for this composition (maps to the Remotion `id` prop).
   final String id;
 
@@ -31,19 +60,6 @@ class VideoConfig {
   /// Preferred output codec. May be overridden by [RenderMediaOptions].
   final Codec? defaultCodec;
 
-  const VideoConfig({
-    required this.id,
-    required this.width,
-    required this.height,
-    required this.fps,
-    required this.durationInFrames,
-    this.defaultProps = const {},
-    this.defaultCodec,
-  })  : assert(width > 0, 'width must be positive'),
-        assert(height > 0, 'height must be positive'),
-        assert(fps > 0, 'fps must be positive'),
-        assert(durationInFrames > 0, 'durationInFrames must be positive');
-
   /// Total duration of the composition in seconds.
   double get durationInSeconds => durationInFrames / fps;
 
@@ -68,22 +84,6 @@ class VideoConfig {
       durationInFrames: durationInFrames ?? this.durationInFrames,
       defaultProps: defaultProps ?? this.defaultProps,
       defaultCodec: defaultCodec ?? this.defaultCodec,
-    );
-  }
-
-  /// Deserializes a [VideoConfig] from a JSON map.
-  factory VideoConfig.fromJson(Map<String, dynamic> json) {
-    return VideoConfig(
-      id: json['id'] as String,
-      width: json['width'] as int,
-      height: json['height'] as int,
-      fps: json['fps'] as int,
-      durationInFrames: json['durationInFrames'] as int,
-      defaultProps:
-          (json['defaultProps'] as Map<String, dynamic>?) ?? const {},
-      defaultCodec: json['defaultCodec'] != null
-          ? Codec.values.byName(json['defaultCodec'] as String)
-          : null,
     );
   }
 

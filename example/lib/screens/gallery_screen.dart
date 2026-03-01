@@ -12,15 +12,6 @@ import 'player_screen.dart';
 
 /// A composition entry shown in the gallery.
 class CompositionEntry {
-  final String id;
-  final String title;
-  final String description;
-  final IconData icon;
-  final Color accent;
-  final Widget composition;
-  final int durationInFrames;
-  final int fps;
-
   const CompositionEntry({
     required this.id,
     required this.title,
@@ -31,90 +22,98 @@ class CompositionEntry {
     required this.durationInFrames,
     required this.fps,
   });
+  final String id;
+  final String title;
+  final String description;
+  final IconData icon;
+  final Color accent;
+  final Widget composition;
+  final int durationInFrames;
+  final int fps;
 }
 
 class GalleryScreen extends StatelessWidget {
   const GalleryScreen({super.key});
 
   static final _compositions = <CompositionEntry>[
-    CompositionEntry(
+    const CompositionEntry(
       id: 'fade-title',
       title: 'Fade Title',
       description: 'Uses interpolate() + LaminarEasing.easeOutCubic to animate opacity and scale.',
       icon: Icons.title,
-      accent: const Color(0xFF6C63FF),
-      composition: const FadeTitleComposition(),
+      accent: Color(0xFF6C63FF),
+      composition: FadeTitleComposition(),
       durationInFrames: 90,
       fps: 30,
     ),
-    CompositionEntry(
+    const CompositionEntry(
       id: 'counter',
       title: 'Animated Counter',
       description: 'Counts from 0–100 over 120 frames with a spring-like ease-out.',
       icon: Icons.pin,
-      accent: const Color(0xFF00C9A7),
-      composition: const CounterComposition(),
+      accent: Color(0xFF00C9A7),
+      composition: CounterComposition(),
       durationInFrames: 120,
       fps: 30,
     ),
-    CompositionEntry(
+    const CompositionEntry(
       id: 'wave',
       title: 'Audio Wave',
       description: 'A procedural wave visualiser driven entirely by useCurrentFrame().',
       icon: Icons.graphic_eq,
-      accent: const Color(0xFFFF6584),
-      composition: const WaveComposition(),
+      accent: Color(0xFFFF6584),
+      composition: WaveComposition(),
       durationInFrames: 90,
       fps: 30,
     ),
-    CompositionEntry(
+    const CompositionEntry(
       id: 'series-demo',
       title: 'Series Scenes',
       description: 'Three scenes chained with Series — Intro → Main → Outro.',
       icon: Icons.movie_filter,
-      accent: const Color(0xFFFFBE0B),
-      composition: const SeriesDemoComposition(),
+      accent: Color(0xFFFFBE0B),
+      composition: SeriesDemoComposition(),
       durationInFrames: 150,
       fps: 30,
     ),
-    CompositionEntry(
+    const CompositionEntry(
       id: 'apple-logo',
       title: '🍎 Apple Logo',
       description: 'The iconic Apple logo drawn with a custom SVG path, animated with a pulsing glow.',
       icon: Icons.apple,
-      accent: const Color(0xFFE0E0E0),
-      composition: const AppleLogoComposition(),
+      accent: Color(0xFFE0E0E0),
+      composition: AppleLogoComposition(),
       durationInFrames: 150,
       fps: 30,
     ),
-    CompositionEntry(
+    const CompositionEntry(
       id: 'starbucks-logo',
       title: '☕ Starbucks Logo',
       description: 'Starbucks siren silhouette traced from the official SVG with rotation and glow animation.',
       icon: Icons.local_cafe,
-      accent: const Color(0xFF00A862),
-      composition: const StarbucksLogoComposition(),
+      accent: Color(0xFF00A862),
+      composition: StarbucksLogoComposition(),
       durationInFrames: 150,
       fps: 30,
     ),
-    CompositionEntry(
+    const CompositionEntry(
       id: 'olympic-rings',
       title: '🏅 Olympic Rings',
       description: '5 rings draw themselves in sequence with authentic over/under interlocking weave.',
       icon: Icons.sports_gymnastics,
-      accent: const Color(0xFF0085C7),
-      composition: const OlympicLogoComposition(),
+      accent: Color(0xFF0085C7),
+      composition: OlympicLogoComposition(),
       durationInFrames: 150,
       fps: 30,
     ),
-    CompositionEntry(
+    const CompositionEntry(
       id: 'trend-chart',
       title: '📈 Trend Line Chart',
       description:
           'Multi-series animated chart that draws itself left-to-right with smooth bezier curves, area fills, and pulsing leading dots.',
       icon: Icons.show_chart,
-      accent: const Color(0xFF6C63FF),
-      composition: const TrendChartComposition(),
+      accent: Color(0xFF6C63FF),
+      composition: TrendChartComposition(),
       durationInFrames: 150,
       fps: 30,
     ),
@@ -152,7 +151,7 @@ class GalleryScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
             child: Text(
               'Select a composition to preview it frame-by-frame.',
-              style: TextStyle(color: Colors.white.withOpacity(0.55), fontSize: 13, letterSpacing: 0.2),
+              style: TextStyle(color: Colors.white.withValues(alpha: 0.55), fontSize: 13, letterSpacing: 0.2),
             ),
           ),
           const SizedBox(height: 8),
@@ -179,8 +178,8 @@ class GalleryScreen extends StatelessWidget {
 }
 
 class _CompositionCard extends StatefulWidget {
-  final CompositionEntry entry;
   const _CompositionCard({required this.entry});
+  final CompositionEntry entry;
 
   @override
   State<_CompositionCard> createState() => _CompositionCardState();
@@ -196,17 +195,17 @@ class _CompositionCardState extends State<_CompositionCard> {
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlayerScreen(entry: e))),
+        onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => PlayerScreen(entry: e))),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           curve: Curves.easeOut,
-          transform: Matrix4.identity()..translate(0.0, _hovered ? -4.0 : 0.0),
+          transform: Matrix4.translationValues(0.0, _hovered ? -4.0 : 0.0, 0.0),
           decoration: BoxDecoration(
             color: const Color(0xFF17172A),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: _hovered ? e.accent.withOpacity(0.7) : Colors.white10, width: 1.5),
+            border: Border.all(color: _hovered ? e.accent.withValues(alpha: 0.7) : Colors.white10, width: 1.5),
             boxShadow: _hovered
-                ? [BoxShadow(color: e.accent.withOpacity(0.25), blurRadius: 24, offset: const Offset(0, 10))]
+                ? [BoxShadow(color: e.accent.withValues(alpha: 0.25), blurRadius: 24, offset: const Offset(0, 10))]
                 : [],
           ),
           child: ClipRect(
@@ -220,7 +219,7 @@ class _CompositionCardState extends State<_CompositionCard> {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: e.accent.withOpacity(0.15),
+                      color: e.accent.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(e.icon, color: e.accent, size: 22),
@@ -235,7 +234,7 @@ class _CompositionCardState extends State<_CompositionCard> {
                   Flexible(
                     child: Text(
                       e.description,
-                      style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12, height: 1.5),
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12, height: 1.5),
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -261,14 +260,14 @@ class _CompositionCardState extends State<_CompositionCard> {
 }
 
 class _Pill extends StatelessWidget {
-  final String label;
   const _Pill({required this.label});
+  final String label;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(color: Colors.white.withOpacity(0.07), borderRadius: BorderRadius.circular(20)),
+      decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.07), borderRadius: BorderRadius.circular(20)),
       child: Text(
         label,
         style: const TextStyle(color: Colors.white60, fontSize: 11, fontWeight: FontWeight.w500),

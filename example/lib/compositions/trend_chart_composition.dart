@@ -9,13 +9,13 @@ import 'package:laminar/laminar.dart';
 
 /// A single labelled data point on the x-axis.
 class ChartDataPoint {
+  const ChartDataPoint({required this.label, required this.value});
+
   /// Human-readable x-axis label (e.g. "Jan", "Week 3", "Q1").
   final String label;
 
   /// Numeric y value.
   final double value;
-
-  const ChartDataPoint({required this.label, required this.value});
 }
 
 /// One named series with its own colour and list of data points.
@@ -23,6 +23,7 @@ class ChartDataPoint {
 /// All series in a [ChartDataset] must have the **same number of data points**
 /// and the same labels (the labels are taken from the first series).
 class ChartSeries {
+  const ChartSeries({required this.name, required this.color, required this.dataPoints, this.glowColor});
   final String name;
   final Color color;
 
@@ -31,13 +32,13 @@ class ChartSeries {
 
   final List<ChartDataPoint> dataPoints;
 
-  const ChartSeries({required this.name, required this.color, required this.dataPoints, this.glowColor});
-
   Color get effectiveGlowColor => glowColor ?? color;
 }
 
 /// Top-level dataset handed to [TrendChartComposition].
 class ChartDataset {
+  const ChartDataset({required this.title, required this.series, this.unit = '', this.prefix = ''});
+
   /// Chart title shown in the top-left corner.
   final String title;
 
@@ -48,8 +49,6 @@ class ChartDataset {
   final String prefix;
 
   final List<ChartSeries> series;
-
-  const ChartDataset({required this.title, required this.series, this.unit = '', this.prefix = ''});
 
   /// X-axis labels derived from the first series.
   List<String> get labels => series.isEmpty ? [] : series.first.dataPoints.map((p) => p.label).toList();
@@ -124,10 +123,10 @@ const ChartDataset _kDefaultDataset = ChartDataset(
 /// | 20–145   | Gradient area fills fade in beneath lines   |
 /// | all      | Pulsing glowing dot at each line's head     |
 class TrendChartComposition extends StatelessWidget {
+  const TrendChartComposition({super.key, this.dataset = _kDefaultDataset});
+
   /// The dataset to visualise. Defaults to [_kDefaultDataset].
   final ChartDataset dataset;
-
-  const TrendChartComposition({super.key, this.dataset = _kDefaultDataset});
 
   @override
   Widget build(BuildContext context) {
@@ -303,8 +302,8 @@ class TrendChartComposition extends StatelessWidget {
 // ╚══════════════════════════════════════════════════════════════════════════╝
 
 class _LegendDot extends StatelessWidget {
-  final ChartSeries series;
   const _LegendDot({required this.series});
+  final ChartSeries series;
 
   @override
   Widget build(BuildContext context) {
@@ -317,13 +316,13 @@ class _LegendDot extends StatelessWidget {
           decoration: BoxDecoration(
             color: series.color,
             shape: BoxShape.circle,
-            boxShadow: [BoxShadow(color: series.color.withOpacity(0.6), blurRadius: 6)],
+            boxShadow: [BoxShadow(color: series.color.withValues(alpha: 0.6), blurRadius: 6)],
           ),
         ),
         const SizedBox(width: 5),
         Text(
           series.name,
-          style: TextStyle(color: series.color.withOpacity(0.85), fontSize: 11, fontWeight: FontWeight.w600),
+          style: TextStyle(color: series.color.withValues(alpha: 0.85), fontSize: 11, fontWeight: FontWeight.w600),
         ),
       ],
     );
@@ -343,7 +342,7 @@ class _AmbientGlowPainter extends CustomPainter {
         ..shader = RadialGradient(
           center: const Alignment(0.4, -0.2),
           radius: 0.8,
-          colors: [const Color(0xFF6C63FF).withOpacity(0.06), Colors.transparent],
+          colors: [const Color(0xFF6C63FF).withValues(alpha: 0.06), Colors.transparent],
         ).createShader(Rect.fromLTWH(0, 0, size.width, size.height)),
     );
   }
@@ -357,12 +356,6 @@ class _AmbientGlowPainter extends CustomPainter {
 // ╚══════════════════════════════════════════════════════════════════════════╝
 
 class _TrendChartPainter extends CustomPainter {
-  final ChartDataset dataset;
-  final double lineProgress;
-  final double fillOpacity;
-  final double dotGlow;
-  final bool isMobile;
-
   _TrendChartPainter({
     required this.dataset,
     required this.lineProgress,
@@ -370,6 +363,11 @@ class _TrendChartPainter extends CustomPainter {
     required this.dotGlow,
     this.isMobile = false,
   });
+  final ChartDataset dataset;
+  final double lineProgress;
+  final double fillOpacity;
+  final double dotGlow;
+  final bool isMobile;
 
   // ── Drawing entry point ─────────────────────────────────────────────────
 
@@ -377,7 +375,7 @@ class _TrendChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (dataset.series.isEmpty) return;
 
-    final leftPad = 0.0;
+    const leftPad = 0.0;
     final rightPad = isMobile ? 0.0 : 8.0;
     final topPad = isMobile ? 8.0 : 12.0;
     final bottomPad = isMobile ? 20.0 : 32.0;
@@ -432,7 +430,7 @@ class _TrendChartPainter extends CustomPainter {
       Offset(leftPad, topPad + chartH),
       Offset(leftPad + chartW, topPad + chartH),
       Paint()
-        ..color = Colors.white.withOpacity(0.12)
+        ..color = Colors.white.withValues(alpha: 0.12)
         ..strokeWidth = 1,
     );
   }
@@ -453,7 +451,7 @@ class _TrendChartPainter extends CustomPainter {
   ) {
     const gridCount = 5;
     final gridPaint = Paint()
-      ..color = Colors.white.withOpacity(0.06)
+      ..color = Colors.white.withValues(alpha: 0.06)
       ..strokeWidth = 1;
 
     for (int g = 0; g <= gridCount; g++) {
@@ -548,7 +546,10 @@ class _TrendChartPainter extends CustomPainter {
         ..shader = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [s.color.withOpacity(fillOpacity), s.color.withOpacity(0)],
+          colors: [
+            s.color.withValues(alpha: fillOpacity),
+            s.color.withValues(alpha: 0),
+          ],
         ).createShader(Rect.fromLTWH(leftPad, topPad, chartW, chartH)),
     );
   }
@@ -563,7 +564,7 @@ class _TrendChartPainter extends CustomPainter {
     canvas.drawPath(
       glowPath,
       Paint()
-        ..color = s.effectiveGlowColor.withOpacity(0.25)
+        ..color = s.effectiveGlowColor.withValues(alpha: 0.25)
         ..strokeWidth = 8
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
@@ -598,7 +599,7 @@ class _TrendChartPainter extends CustomPainter {
         actualPt,
         r + 2,
         Paint()
-          ..color = s.color.withOpacity(0.18 * dotFrac)
+          ..color = s.color.withValues(alpha: 0.18 * dotFrac)
           ..style = PaintingStyle.fill,
       );
       // Core
@@ -611,7 +612,7 @@ class _TrendChartPainter extends CustomPainter {
       lead,
       10.0 * dotGlow,
       Paint()
-        ..color = s.effectiveGlowColor.withOpacity(0.12 * dotGlow)
+        ..color = s.effectiveGlowColor.withValues(alpha: 0.12 * dotGlow)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
     );
     canvas.drawCircle(lead, 4.5, Paint()..color = Colors.white);

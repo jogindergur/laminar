@@ -14,11 +14,11 @@ class SeriesDemoComposition extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Series(
+    return const Series(
       sequences: [
-        SeriesSequence(durationInFrames: 50, child: const _IntroScene()),
-        SeriesSequence(durationInFrames: 60, child: const _MainScene()),
-        SeriesSequence(durationInFrames: 40, child: const _OutroScene()),
+        SeriesSequence(durationInFrames: 50, child: _IntroScene()),
+        SeriesSequence(durationInFrames: 60, child: _MainScene()),
+        SeriesSequence(durationInFrames: 40, child: _OutroScene()),
       ],
     );
   }
@@ -67,9 +67,9 @@ class _IntroScene extends StatelessWidget {
                       width: 64,
                       height: 64,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFBE0B).withOpacity(0.15),
+                        color: const Color(0xFFFFBE0B).withValues(alpha: 0.15),
                         shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFFFFBE0B).withOpacity(0.5), width: 2),
+                        border: Border.all(color: const Color(0xFFFFBE0B).withValues(alpha: 0.5), width: 2),
                       ),
                       child: const Icon(Icons.movie_filter_outlined, color: Color(0xFFFFBE0B), size: 28),
                     ),
@@ -91,7 +91,7 @@ class _IntroScene extends StatelessWidget {
                     const SizedBox(height: 10),
                     Text(
                       'frame $frame / 50  •  Scene 1 of 3',
-                      style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 13),
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 13),
                     ),
                   ],
                 ),
@@ -135,10 +135,10 @@ class _MainScene extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                const Text(
                   'Laminar API',
                   style: TextStyle(
-                    color: const Color(0xFF00C9A7),
+                    color: Color(0xFF00C9A7),
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 3,
@@ -196,7 +196,10 @@ class _MainScene extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            Text('— $desc', style: TextStyle(color: Colors.white.withOpacity(0.55), fontSize: 13)),
+                            Text(
+                              '— $desc',
+                              style: TextStyle(color: Colors.white.withValues(alpha: 0.55), fontSize: 13),
+                            ),
                           ],
                         ),
                       ),
@@ -206,7 +209,7 @@ class _MainScene extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   'frame $frame / 60  •  Scene 2 of 3',
-                  style: TextStyle(color: Colors.white.withOpacity(0.3), fontSize: 11),
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.3), fontSize: 11),
                 ),
               ],
             ),
@@ -274,12 +277,12 @@ class _OutroScene extends StatelessWidget {
                     const SizedBox(height: 10),
                     Text(
                       'Programmatic video. Pure Flutter.',
-                      style: TextStyle(color: Colors.white.withOpacity(0.55), fontSize: 15, letterSpacing: 0.3),
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.55), fontSize: 15, letterSpacing: 0.3),
                     ),
                     const SizedBox(height: 24),
                     Text(
                       'frame $frame / 40  •  Scene 3 of 3',
-                      style: TextStyle(color: Colors.white.withOpacity(0.25), fontSize: 11),
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.25), fontSize: 11),
                     ),
                   ],
                 ),
