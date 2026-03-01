@@ -33,8 +33,6 @@ class RenderMediaOptions {
   /// When `true`, prefer lossless encoding where the codec supports it.
   final bool preferLossless;
 
-  /// Pixel format string forwarded to FFmpeg (e.g. `'yuv420p'`).
-  ///
   /// Defaults to `'yuv420p'` for maximum compatibility.
   final String pixelFormat;
 
@@ -54,9 +52,7 @@ class RenderMediaOptions {
   });
 
   /// The effective [FrameRange] — falls back to the full composition range.
-  FrameRange get effectiveFrameRange =>
-      frameRange ??
-      FrameRange(start: 0, end: composition.durationInFrames - 1);
+  FrameRange get effectiveFrameRange => frameRange ?? FrameRange(start: 0, end: composition.durationInFrames - 1);
 
   /// Returns a copy of these options with the given fields overridden.
   RenderMediaOptions copyWith({

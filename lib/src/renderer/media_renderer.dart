@@ -14,8 +14,7 @@ import 'frame_renderer.dart';
 /// 1. Iterates through every frame in [RenderMediaOptions.effectiveFrameRange].
 /// 2. Delegates per-frame rasterisation to [FrameRenderer].
 /// 3. Emits [RenderMediaProgress] events on the returned [Stream].
-/// 4. Pipes PNG frames to an FFmpeg child process.
-/// 5. Returns a [RenderMediaResult] when complete.
+/// 4. Returns a [RenderMediaResult] when complete.
 ///
 /// This is the Dart counterpart to Remotion's `render-media.ts` orchestration
 /// module. The heavy rendering is off-loaded to [Isolate.run] calls so the UI
@@ -30,8 +29,7 @@ import 'frame_renderer.dart';
 class MediaRenderer {
   final RenderMediaOptions options;
 
-  final StreamController<RenderMediaProgress> _progressController =
-      StreamController<RenderMediaProgress>.broadcast();
+  final StreamController<RenderMediaProgress> _progressController = StreamController<RenderMediaProgress>.broadcast();
 
   /// A [Stream] of [RenderMediaProgress] events emitted during the render.
   ///
@@ -53,11 +51,9 @@ class MediaRenderer {
     final stopwatch = Stopwatch()..start();
     final slowFrames = <SlowFrame>[];
 
-    _progressController
-        .add(RenderMediaProgress.initial(totalFrames));
+    _progressController.add(RenderMediaProgress.initial(totalFrames));
 
-    final concurrency =
-        options.concurrency ?? _defaultConcurrency(totalFrames);
+    final concurrency = options.concurrency ?? _defaultConcurrency(totalFrames);
 
     // Split frames into batches for parallel Isolate processing.
     final batches = _chunk(range.frames.toList(), concurrency);
@@ -76,13 +72,9 @@ class MediaRenderer {
 
         frameWatch.stop();
 
-        if (options.slowFrameThresholdMs != null &&
-            frameWatch.elapsedMilliseconds > options.slowFrameThresholdMs!) {
-          slowFrames.add(
-              SlowFrame(frame: frame, timeMs: frameWatch.elapsedMilliseconds));
+        if (options.slowFrameThresholdMs != null && frameWatch.elapsedMilliseconds > options.slowFrameThresholdMs!) {
+          slowFrames.add(SlowFrame(frame: frame, timeMs: frameWatch.elapsedMilliseconds));
         }
-
-        // In a real implementation, encode these bytes with FFmpeg via Process.
         // Here we return the raw RGBA bytes as a placeholder.
         final bytes = await _imageToBytes(image);
         image.dispose();
@@ -94,17 +86,17 @@ class MediaRenderer {
 
       final progress = rendered / totalFrames;
       final elapsed = stopwatch.elapsedMilliseconds;
-      final estimated = progress > 0
-          ? ((elapsed / progress) * (1 - progress)).round()
-          : null;
+      final estimated = progress > 0 ? ((elapsed / progress) * (1 - progress)).round() : null;
 
-      _progressController.add(RenderMediaProgress(
-        renderedFrames: rendered,
-        totalFrames: totalFrames,
-        progress: progress,
-        slowFrames: List.unmodifiable(slowFrames),
-        estimatedRemainingMs: estimated,
-      ));
+      _progressController.add(
+        RenderMediaProgress(
+          renderedFrames: rendered,
+          totalFrames: totalFrames,
+          progress: progress,
+          slowFrames: List.unmodifiable(slowFrames),
+          estimatedRemainingMs: estimated,
+        ),
+      );
     }
 
     stopwatch.stop();
@@ -128,8 +120,7 @@ class MediaRenderer {
   List<List<T>> _chunk<T>(List<T> list, int size) {
     final chunks = <List<T>>[];
     for (int i = 0; i < list.length; i += size) {
-      chunks.add(list.sublist(
-          i, (i + size) < list.length ? i + size : list.length));
+      chunks.add(list.sublist(i, (i + size) < list.length ? i + size : list.length));
     }
     return chunks;
   }
@@ -147,6 +138,7 @@ class RenderException implements Exception {
   const RenderException(this.message, {this.cause});
 
   @override
-  String toString() => 'RenderException: $message'
+  String toString() =>
+      'RenderException: $message'
       '${cause != null ? '\nCaused by: $cause' : ''}';
 }

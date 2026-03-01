@@ -5,7 +5,6 @@ import '../compositions/apple_logo_composition.dart';
 import '../compositions/counter_composition.dart';
 import '../compositions/fade_title_composition.dart';
 import '../compositions/olympic_logo_composition.dart';
-import '../compositions/series_demo_composition.dart';
 import '../compositions/starbucks_logo_composition.dart';
 import '../compositions/trend_chart_composition.dart';
 import '../compositions/wave_composition.dart';
@@ -114,19 +113,6 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
 
           const SizedBox(height: 28),
 
-          // ── Animated Counter ───────────────────────────────────────────────
-          _DualRow(
-            label: 'Animated Counter',
-            sub: 'CounterComposition · 1:1 · 120f @ 30fps',
-            accent: const Color(0xFF00C9A7),
-            aspectRatio: 1,
-            ctrl: _counterCtrl,
-            config: const VideoConfig(id: 'counter', width: 600, height: 600, fps: 30, durationInFrames: 120),
-            child: const CounterComposition(),
-          ),
-
-          const SizedBox(height: 28),
-
           // ── Audio Wave ─────────────────────────────────────────────────────
           _DualRow(
             label: 'Audio Wave',
@@ -136,19 +122,6 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             ctrl: _waveCtrl,
             config: const VideoConfig(id: 'wave', width: 600, height: 600, fps: 30, durationInFrames: 90),
             child: const WaveComposition(),
-          ),
-
-          const SizedBox(height: 28),
-
-          // ── Series Demo ────────────────────────────────────────────────────
-          _DualRow(
-            label: 'Series Demo',
-            sub: 'SeriesDemoComposition · 16:9 · 150f @ 30fps',
-            accent: const Color(0xFFFFBE0B),
-            aspectRatio: 16 / 9,
-            ctrl: _seriesCtrl,
-            config: const VideoConfig(id: 'series-demo', width: 1920, height: 1080, fps: 30, durationInFrames: 150),
-            child: const SeriesDemoComposition(),
           ),
 
           const SizedBox(height: 28),
@@ -165,6 +138,19 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
           ),
 
           const SizedBox(height: 28),
+
+          // ── Series Demo ────────────────────────────────────────────────────
+          // _DualRow(
+          //   label: 'Series Demo',
+          //   sub: 'SeriesDemoComposition · 16:9 · 150f @ 30fps',
+          //   accent: const Color(0xFFFFBE0B),
+          //   aspectRatio: 16 / 9,
+          //   ctrl: _seriesCtrl,
+          //   config: const VideoConfig(id: 'series-demo', width: 1920, height: 1080, fps: 30, durationInFrames: 150),
+          //   child: const SeriesDemoComposition(),
+          // ),
+
+          // const SizedBox(height: 28),
 
           // ── Starbucks Logo ─────────────────────────────────────────────────
           _DualRow(
@@ -202,6 +188,19 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
           ),
 
           const SizedBox(height: 40),
+
+          // ── Animated Counter ───────────────────────────────────────────────
+          _DualRow(
+            label: 'Animated Counter',
+            sub: 'CounterComposition · 1:1 · 120f @ 30fps',
+            accent: const Color(0xFF00C9A7),
+            aspectRatio: 1,
+            ctrl: _counterCtrl,
+            config: const VideoConfig(id: 'counter', width: 600, height: 600, fps: 30, durationInFrames: 120),
+            child: const CounterComposition(),
+          ),
+
+          const SizedBox(height: 28),
         ],
       ),
     );
@@ -391,7 +390,11 @@ class _PlayerPaneState extends State<_PlayerPane> {
     super.dispose();
   }
 
-  void _rebuild() => setState(() {});
+  void _rebuild() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
