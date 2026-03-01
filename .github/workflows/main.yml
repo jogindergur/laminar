@@ -10,7 +10,7 @@ jobs:
           channel: 'stable'
       - run: flutter config --enable-windows-desktop
       - run: flutter pub get
-      - run: cd example
+      - run: cd ./example
       - run: flutter build windows
       - name: Upload Build
         uses: actions/upload-artifact@v7.0.0
