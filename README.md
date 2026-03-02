@@ -1,6 +1,6 @@
 # Laminar 🎬
 
-**A platform-independent Flutter library for programmatic video composition and rendering.**
+**A platform-independent Flutter library for programmatic video composition and rendering. User animation is whole new experience.**
 
 Laminar is inspired by [Remotion].
 
