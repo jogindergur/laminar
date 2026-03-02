@@ -1,6 +1,8 @@
 # Laminar 🎬
 
-**A platform-independent Flutter library for programmatic video composition and rendering. User animation is whole new experience.**
+## Take a look at: https://easyhub.tech/laminar/
+
+**A platform-independent Flutter library for programmatic animation composition and rendering. User animation is whole new experience.**
 
 Laminar is inspired by [Remotion].
 
@@ -114,8 +116,6 @@ Series(
 ```dart
 final options = RenderMediaOptions(
   composition: myConfig,
-  // Note: Video encoding to .mp4 is not yet implemented.
-  // Laminar currently processes frames concurrently in memory.
   outputLocation: '/tmp/output_directory',
   codec: Codec.h264,
   concurrency: 4,
@@ -180,7 +180,10 @@ flutter test
 
 ---
 
+## Credits
+
+- [Remotion](https://github.com/remotion-dev/remotion), thanks for the inspiration.
+
 ## License
 
-MIT
-# laminar
+Laminar is released under a MIT license. See LICENSE for details.
