@@ -29,9 +29,8 @@ abstract final class LaminarEasing {
     return u * u * u + 1;
   }
 
-  static double easeInOutCubic(double t) => t < 0.5
-      ? 4 * t * t * t
-      : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+  static double easeInOutCubic(double t) =>
+      t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 
   // ── Quart ─────────────────────────────────────────────────────────────────
 
@@ -41,18 +40,14 @@ abstract final class LaminarEasing {
     return 1 - u * u * u * u;
   }
 
-  static double easeInOutQuart(double t) => t < 0.5
-      ? 8 * t * t * t * t
-      : 1 - 8 * (--t) * t * t * t;
+  static double easeInOutQuart(double t) =>
+      t < 0.5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t;
 
   // ── Sine ──────────────────────────────────────────────────────────────────
 
-  static double easeInSine(double t) =>
-      1 - math.cos((t * math.pi) / 2);
-  static double easeOutSine(double t) =>
-      math.sin((t * math.pi) / 2);
-  static double easeInOutSine(double t) =>
-      -(math.cos(math.pi * t) - 1) / 2;
+  static double easeInSine(double t) => 1 - math.cos((t * math.pi) / 2);
+  static double easeOutSine(double t) => math.sin((t * math.pi) / 2);
+  static double easeInOutSine(double t) => -(math.cos(math.pi * t) - 1) / 2;
 
   // ── Expo ──────────────────────────────────────────────────────────────────
 
@@ -86,12 +81,18 @@ abstract final class LaminarEasing {
       3 * a * t * (1 - t) * (1 - t) + 3 * b * t * t * (1 - t) + t * t * t;
 
   static double _cubicBezier(
-      double t, double x1, double y1, double x2, double y2) {
+    double t,
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+  ) {
     // Newton-Raphson to find the parameter for x, then evaluate y.
     double s = t;
     for (int i = 0; i < 8; i++) {
       final x = _cubicBezierP(s, x1, x2) - t;
-      final dx = 3 * x1 * (1 - s) * (1 - s) +
+      final dx =
+          3 * x1 * (1 - s) * (1 - s) +
           6 * x2 * s * (1 - s) * (-1 + 2 * s / (1 - s)) +
           0;
       if (dx.abs() < 1e-6) break;
@@ -103,18 +104,14 @@ abstract final class LaminarEasing {
   // Convenience presets matching CSS named easings ─────────────────────────
 
   /// `ease` — CSS default.
-  static double Function(double) get ease =>
-      bezier(0.25, 0.1, 0.25, 1.0);
+  static double Function(double) get ease => bezier(0.25, 0.1, 0.25, 1.0);
 
   /// `ease-in` — CSS cubic-bezier(0.42, 0, 1.0, 1.0).
-  static double Function(double) get cssEaseIn =>
-      bezier(0.42, 0, 1.0, 1.0);
+  static double Function(double) get cssEaseIn => bezier(0.42, 0, 1.0, 1.0);
 
   /// `ease-out` — CSS cubic-bezier(0, 0, 0.58, 1.0).
-  static double Function(double) get cssEaseOut =>
-      bezier(0.0, 0.0, 0.58, 1.0);
+  static double Function(double) get cssEaseOut => bezier(0.0, 0.0, 0.58, 1.0);
 
   /// `ease-in-out` — CSS cubic-bezier(0.42, 0, 0.58, 1.0).
-  static double Function(double) get cssEaseInOut =>
-      bezier(0.42, 0, 0.58, 1.0);
+  static double Function(double) get cssEaseInOut => bezier(0.42, 0, 0.58, 1.0);
 }

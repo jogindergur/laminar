@@ -39,7 +39,11 @@ void main() {
     });
 
     test('RenderMediaProgress isComplete returns true when done', () {
-      const complete = RenderMediaProgress(renderedFrames: 100, totalFrames: 100, progress: 1.0);
+      const complete = RenderMediaProgress(
+        renderedFrames: 100,
+        totalFrames: 100,
+        progress: 1.0,
+      );
       expect(complete.isComplete, true);
     });
 
@@ -55,7 +59,10 @@ void main() {
       expect(result.durationMs, 5000);
       expect(result.totalFrames, 120);
       expect(result.slowFrames.length, 1);
-      expect(result.toString(), 'RenderMediaResult(output: /path/to/output.mp4, 120f in 5000ms)');
+      expect(
+        result.toString(),
+        'RenderMediaResult(output: /path/to/output.mp4, 120f in 5000ms)',
+      );
     });
   });
 }

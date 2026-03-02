@@ -94,7 +94,13 @@ class OlympicLogoComposition extends StatelessWidget {
               height: 300,
               child: CustomPaint(
                 painter: _OlympicPainter(
-                  progresses: [blueP * opacity, yellowP * opacity, blackP * opacity, greenP * opacity, redP * opacity],
+                  progresses: [
+                    blueP * opacity,
+                    yellowP * opacity,
+                    blackP * opacity,
+                    greenP * opacity,
+                    redP * opacity,
+                  ],
                   glow: glow,
                   allDone: redP >= 1.0,
                 ),
@@ -125,7 +131,11 @@ class OlympicLogoComposition extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       'frame $frame / $total',
-                      style: TextStyle(fontSize: 9, letterSpacing: 1.5, color: Colors.black.withValues(alpha: 0.22)),
+                      style: TextStyle(
+                        fontSize: 9,
+                        letterSpacing: 1.5,
+                        color: Colors.black.withValues(alpha: 0.22),
+                      ),
                     ),
                   ],
                 ),
@@ -162,8 +172,11 @@ List<double>? _intersectAngles(Offset ca, Offset cb, double r) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _OlympicPainter extends CustomPainter {
-
-  const _OlympicPainter({required this.progresses, required this.glow, required this.allDone});
+  const _OlympicPainter({
+    required this.progresses,
+    required this.glow,
+    required this.allDone,
+  });
   final List<double> progresses; // [blue, yellow, black, green, red]
   final double glow;
   final bool allDone;
@@ -239,7 +252,8 @@ class _OlympicPainter extends CustomPainter {
   /// Clockwise angular distance from [start] to [end] (both in radians).
   /// All rings draw clockwise from -π/2; this gives how far they must sweep
   /// before their arc geometrically reaches a given angle.
-  static double _cwSweep(double start, double end) => (end - start + 2 * math.pi) % (2 * math.pi);
+  static double _cwSweep(double start, double end) =>
+      (end - start + 2 * math.pi) % (2 * math.pi);
 
   /// True if a ring with progress [p] (0–1) has drawn its arc past [angle].
   /// Rings start at -π/2 and grow clockwise.
@@ -253,7 +267,10 @@ class _OlympicPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final scale = math.min(size.width / _w, size.height / _h);
-    canvas.translate((size.width - _w * scale) / 2, (size.height - _h * scale) / 2);
+    canvas.translate(
+      (size.width - _w * scale) / 2,
+      (size.height - _h * scale) / 2,
+    );
     canvas.scale(scale);
 
     // Glow behind everything
@@ -310,5 +327,8 @@ class _OlympicPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_OlympicPainter old) => old.progresses != progresses || old.glow != glow || old.allDone != allDone;
+  bool shouldRepaint(_OlympicPainter old) =>
+      old.progresses != progresses ||
+      old.glow != glow ||
+      old.allDone != allDone;
 }

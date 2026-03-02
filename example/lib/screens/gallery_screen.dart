@@ -39,7 +39,8 @@ class GalleryScreen extends StatelessWidget {
     const CompositionEntry(
       id: 'fade-title',
       title: 'Fade Title',
-      description: 'Uses interpolate() + LaminarEasing.easeOutCubic to animate opacity and scale.',
+      description:
+          'Uses interpolate() + LaminarEasing.easeOutCubic to animate opacity and scale.',
       icon: Icons.title,
       accent: Color(0xFF6C63FF),
       composition: FadeTitleComposition(),
@@ -49,7 +50,8 @@ class GalleryScreen extends StatelessWidget {
     const CompositionEntry(
       id: 'counter',
       title: 'Animated Counter',
-      description: 'Counts from 0–100 over 120 frames with a spring-like ease-out.',
+      description:
+          'Counts from 0–100 over 120 frames with a spring-like ease-out.',
       icon: Icons.pin,
       accent: Color(0xFF00C9A7),
       composition: CounterComposition(),
@@ -59,7 +61,8 @@ class GalleryScreen extends StatelessWidget {
     const CompositionEntry(
       id: 'wave',
       title: 'Audio Wave',
-      description: 'A procedural wave visualiser driven entirely by useCurrentFrame().',
+      description:
+          'A procedural wave visualiser driven entirely by useCurrentFrame().',
       icon: Icons.graphic_eq,
       accent: Color(0xFFFF6584),
       composition: WaveComposition(),
@@ -79,7 +82,8 @@ class GalleryScreen extends StatelessWidget {
     const CompositionEntry(
       id: 'apple-logo',
       title: '🍎 Apple Logo',
-      description: 'The iconic Apple logo drawn with a custom SVG path, animated with a pulsing glow.',
+      description:
+          'The iconic Apple logo drawn with a custom SVG path, animated with a pulsing glow.',
       icon: Icons.apple,
       accent: Color(0xFFE0E0E0),
       composition: AppleLogoComposition(),
@@ -89,7 +93,8 @@ class GalleryScreen extends StatelessWidget {
     const CompositionEntry(
       id: 'starbucks-logo',
       title: '☕ Starbucks Logo',
-      description: 'Starbucks siren silhouette traced from the official SVG with rotation and glow animation.',
+      description:
+          'Starbucks siren silhouette traced from the official SVG with rotation and glow animation.',
       icon: Icons.local_cafe,
       accent: Color(0xFF00A862),
       composition: StarbucksLogoComposition(),
@@ -99,7 +104,8 @@ class GalleryScreen extends StatelessWidget {
     const CompositionEntry(
       id: 'olympic-rings',
       title: '🏅 Olympic Rings',
-      description: '5 rings draw themselves in sequence with authentic over/under interlocking weave.',
+      description:
+          '5 rings draw themselves in sequence with authentic over/under interlocking weave.',
       icon: Icons.sports_gymnastics,
       accent: Color(0xFF0085C7),
       composition: OlympicLogoComposition(),
@@ -129,10 +135,16 @@ class GalleryScreen extends StatelessWidget {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: [Color(0xFF6C63FF), Color(0xFFFF6584)]),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF6C63FF), Color(0xFFFF6584)],
+                ),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: const Icon(Icons.play_arrow, color: Colors.white, size: 16),
+              child: const Icon(
+                Icons.play_arrow,
+                color: Colors.white,
+                size: 16,
+              ),
             ),
             const SizedBox(width: 10),
             const Text('Laminar Demo Gallery'),
@@ -151,7 +163,11 @@ class GalleryScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
             child: Text(
               'Select a composition to preview it frame-by-frame.',
-              style: TextStyle(color: Colors.white.withValues(alpha: 0.55), fontSize: 13, letterSpacing: 0.2),
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.55),
+                fontSize: 13,
+                letterSpacing: 0.2,
+              ),
             ),
           ),
           const SizedBox(height: 8),
@@ -167,7 +183,8 @@ class GalleryScreen extends StatelessWidget {
                   mainAxisSpacing: 14,
                 ),
                 itemCount: _compositions.length,
-                itemBuilder: (context, i) => _CompositionCard(entry: _compositions[i]),
+                itemBuilder: (context, i) =>
+                    _CompositionCard(entry: _compositions[i]),
               ),
             ),
           ),
@@ -195,7 +212,9 @@ class _CompositionCardState extends State<_CompositionCard> {
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
-        onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => PlayerScreen(entry: e))),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => PlayerScreen(entry: e))),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           curve: Curves.easeOut,
@@ -203,9 +222,20 @@ class _CompositionCardState extends State<_CompositionCard> {
           decoration: BoxDecoration(
             color: const Color(0xFF17172A),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: _hovered ? e.accent.withValues(alpha: 0.7) : Colors.white10, width: 1.5),
+            border: Border.all(
+              color: _hovered
+                  ? e.accent.withValues(alpha: 0.7)
+                  : Colors.white10,
+              width: 1.5,
+            ),
             boxShadow: _hovered
-                ? [BoxShadow(color: e.accent.withValues(alpha: 0.25), blurRadius: 24, offset: const Offset(0, 10))]
+                ? [
+                    BoxShadow(
+                      color: e.accent.withValues(alpha: 0.25),
+                      blurRadius: 24,
+                      offset: const Offset(0, 10),
+                    ),
+                  ]
                 : [],
           ),
           child: ClipRect(
@@ -227,14 +257,22 @@ class _CompositionCardState extends State<_CompositionCard> {
                   const SizedBox(height: 14),
                   Text(
                     e.title,
-                    style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 6),
                   Flexible(
                     child: Text(
                       e.description,
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12, height: 1.5),
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.5),
+                        fontSize: 12,
+                        height: 1.5,
+                      ),
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -244,7 +282,10 @@ class _CompositionCardState extends State<_CompositionCard> {
                     spacing: 6,
                     runSpacing: 4,
                     children: [
-                      _Pill(label: '${(e.durationInFrames / e.fps).toStringAsFixed(1)}s'),
+                      _Pill(
+                        label:
+                            '${(e.durationInFrames / e.fps).toStringAsFixed(1)}s',
+                      ),
                       _Pill(label: '${e.fps}fps'),
                       _Pill(label: '${e.durationInFrames}f'),
                     ],
@@ -267,10 +308,17 @@ class _Pill extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.07), borderRadius: BorderRadius.circular(20)),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Text(
         label,
-        style: const TextStyle(color: Colors.white60, fontSize: 11, fontWeight: FontWeight.w500),
+        style: const TextStyle(
+          color: Colors.white60,
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

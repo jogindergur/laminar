@@ -19,7 +19,13 @@ Widget _withComposition({
   return MaterialApp(
     home: Scaffold(
       body: CompositionProvider(
-        config: VideoConfig(id: id, width: 1920, height: 1080, fps: fps, durationInFrames: durationInFrames),
+        config: VideoConfig(
+          id: id,
+          width: 1920,
+          height: 1080,
+          fps: fps,
+          durationInFrames: durationInFrames,
+        ),
         frame: frame,
         child: child,
       ),
@@ -47,19 +53,25 @@ void main() {
   // ── FadeTitleComposition ───────────────────────────────────────────────────
   group('FadeTitleComposition', () {
     testWidgets('renders at frame 0 without error', (tester) async {
-      await tester.pumpWidget(_withComposition(child: const FadeTitleComposition(), frame: 0));
+      await tester.pumpWidget(
+        _withComposition(child: const FadeTitleComposition(), frame: 0),
+      );
       await tester.pump();
       expect(find.byType(FadeTitleComposition), findsOneWidget);
     });
 
     testWidgets('title text is visible at frame 45', (tester) async {
-      await tester.pumpWidget(_withComposition(child: const FadeTitleComposition(), frame: 45));
+      await tester.pumpWidget(
+        _withComposition(child: const FadeTitleComposition(), frame: 45),
+      );
       await tester.pump();
       expect(find.text('Hello, Laminar!'), findsOneWidget);
     });
 
     testWidgets('renders at last frame (89) without error', (tester) async {
-      await tester.pumpWidget(_withComposition(child: const FadeTitleComposition(), frame: 89));
+      await tester.pumpWidget(
+        _withComposition(child: const FadeTitleComposition(), frame: 89),
+      );
       await tester.pump();
       expect(find.byType(FadeTitleComposition), findsOneWidget);
     });
@@ -68,19 +80,37 @@ void main() {
   // ── CounterComposition ────────────────────────────────────────────────────
   group('CounterComposition', () {
     testWidgets('renders at frame 0 showing "0"', (tester) async {
-      await tester.pumpWidget(_withComposition(child: const CounterComposition(), frame: 0, durationInFrames: 120));
+      await tester.pumpWidget(
+        _withComposition(
+          child: const CounterComposition(),
+          frame: 0,
+          durationInFrames: 120,
+        ),
+      );
       await tester.pump();
       expect(find.text('0'), findsOneWidget);
     });
 
     testWidgets('renders at frame 100 showing "100"', (tester) async {
-      await tester.pumpWidget(_withComposition(child: const CounterComposition(), frame: 100, durationInFrames: 120));
+      await tester.pumpWidget(
+        _withComposition(
+          child: const CounterComposition(),
+          frame: 100,
+          durationInFrames: 120,
+        ),
+      );
       await tester.pump();
       expect(find.text('100'), findsOneWidget);
     });
 
     testWidgets('mid-frame (50) renders without error', (tester) async {
-      await tester.pumpWidget(_withComposition(child: const CounterComposition(), frame: 50, durationInFrames: 120));
+      await tester.pumpWidget(
+        _withComposition(
+          child: const CounterComposition(),
+          frame: 50,
+          durationInFrames: 120,
+        ),
+      );
       await tester.pump();
       expect(find.byType(CounterComposition), findsOneWidget);
     });
@@ -89,13 +119,17 @@ void main() {
   // ── WaveComposition ───────────────────────────────────────────────────────
   group('WaveComposition', () {
     testWidgets('renders at frame 0 without error', (tester) async {
-      await tester.pumpWidget(_withComposition(child: const WaveComposition(), frame: 0));
+      await tester.pumpWidget(
+        _withComposition(child: const WaveComposition(), frame: 0),
+      );
       await tester.pump();
       expect(find.byType(WaveComposition), findsOneWidget);
     });
 
     testWidgets('LAMINAR WAVE label visible at frame 45', (tester) async {
-      await tester.pumpWidget(_withComposition(child: const WaveComposition(), frame: 45));
+      await tester.pumpWidget(
+        _withComposition(child: const WaveComposition(), frame: 45),
+      );
       await tester.pump();
       expect(find.text('LAMINAR WAVE'), findsOneWidget);
     });
@@ -104,20 +138,38 @@ void main() {
   // ── SeriesDemoComposition ─────────────────────────────────────────────────
   group('SeriesDemoComposition — Series/Sequence routing', () {
     testWidgets('scene 1 (Introduction) visible at frame 10', (tester) async {
-      await tester.pumpWidget(_withComposition(child: const SeriesDemoComposition(), frame: 10, durationInFrames: 150));
+      await tester.pumpWidget(
+        _withComposition(
+          child: const SeriesDemoComposition(),
+          frame: 10,
+          durationInFrames: 150,
+        ),
+      );
       await tester.pump();
       expect(find.text('Introduction'), findsOneWidget);
     });
 
-    testWidgets('scene 2 (Core Primitives) visible at frame 70', (tester) async {
-      await tester.pumpWidget(_withComposition(child: const SeriesDemoComposition(), frame: 70, durationInFrames: 150));
+    testWidgets('scene 2 (Core Primitives) visible at frame 70', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _withComposition(
+          child: const SeriesDemoComposition(),
+          frame: 70,
+          durationInFrames: 150,
+        ),
+      );
       await tester.pump();
       expect(find.text('Core Primitives'), findsOneWidget);
     });
 
     testWidgets('scene 3 (Outro) visible at frame 120', (tester) async {
       await tester.pumpWidget(
-        _withComposition(child: const SeriesDemoComposition(), frame: 120, durationInFrames: 150),
+        _withComposition(
+          child: const SeriesDemoComposition(),
+          frame: 120,
+          durationInFrames: 150,
+        ),
       );
       await tester.pump();
       expect(find.text('laminar'), findsOneWidget);
@@ -164,18 +216,21 @@ void main() {
       expect(capturedConfig?.durationInFrames, 200);
     });
 
-    testWidgets('throws FlutterError when useVideoConfig called outside CompositionProvider', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
-            builder: (ctx) {
-              expect(() => useVideoConfig(ctx), throwsA(isA<FlutterError>()));
-              return const SizedBox.shrink();
-            },
+    testWidgets(
+      'throws FlutterError when useVideoConfig called outside CompositionProvider',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Builder(
+              builder: (ctx) {
+                expect(() => useVideoConfig(ctx), throwsA(isA<FlutterError>()));
+                return const SizedBox.shrink();
+              },
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   });
 
   // ── Composition<T> widget (self-animating) ────────────────────────────────
@@ -185,7 +240,13 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: Composition<void>(
-              config: const VideoConfig(id: 'test', width: 1920, height: 1080, fps: 30, durationInFrames: 90),
+              config: const VideoConfig(
+                id: 'test',
+                width: 1920,
+                height: 1080,
+                fps: 30,
+                durationInFrames: 90,
+              ),
               defaultProps: null,
               serialize: (_) => {},
               component: (ctx, _) {
@@ -201,7 +262,9 @@ void main() {
       expect(find.text('frame-0'), findsOneWidget);
     });
 
-    testWidgets('seekTo via external controller updates rendered frame', (tester) async {
+    testWidgets('seekTo via external controller updates rendered frame', (
+      tester,
+    ) async {
       final ctrl = LaminarController();
       addTearDown(ctrl.dispose);
 
@@ -209,7 +272,13 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: Composition<void>(
-              config: const VideoConfig(id: 'ctrl-test', width: 1920, height: 1080, fps: 30, durationInFrames: 90),
+              config: const VideoConfig(
+                id: 'ctrl-test',
+                width: 1920,
+                height: 1080,
+                fps: 30,
+                durationInFrames: 90,
+              ),
               defaultProps: null,
               serialize: (_) => {},
               component: (ctx, _) {
@@ -229,13 +298,21 @@ void main() {
       expect(find.text('frame-42'), findsOneWidget);
     });
 
-    testWidgets('VideoConfig propagated correctly to descendants', (tester) async {
+    testWidgets('VideoConfig propagated correctly to descendants', (
+      tester,
+    ) async {
       VideoConfig? captured;
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: Composition<void>(
-              config: const VideoConfig(id: 'config-prop', width: 1280, height: 720, fps: 60, durationInFrames: 120),
+              config: const VideoConfig(
+                id: 'config-prop',
+                width: 1280,
+                height: 720,
+                fps: 60,
+                durationInFrames: 120,
+              ),
               defaultProps: null,
               serialize: (_) => {},
               component: (ctx, _) {

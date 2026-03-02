@@ -37,7 +37,6 @@ import 'package:flutter/foundation.dart';
 /// When no controller is passed to [Composition], a default one is created
 /// and owned internally — the composition simply auto-plays on build.
 class LaminarController extends ChangeNotifier {
-
   LaminarController({int initialFrame = 0}) : assert(initialFrame >= 0) {
     _frame = initialFrame;
   }
@@ -75,8 +74,9 @@ class LaminarController extends ChangeNotifier {
   bool get isFinished => _status == PlaybackStatus.finished;
 
   /// Playback progress in [0.0, 1.0]. Returns 0.0 if not attached.
-  double get progress =>
-      _durationInFrames > 1 ? _frame / (_durationInFrames - 1) : (_durationInFrames == 1 ? 1.0 : 0.0);
+  double get progress => _durationInFrames > 1
+      ? _frame / (_durationInFrames - 1)
+      : (_durationInFrames == 1 ? 1.0 : 0.0);
 
   // ── Commands ─────────────────────────────────────────────────────────────
 
@@ -132,7 +132,9 @@ class LaminarController extends ChangeNotifier {
   /// internal [Ticker]. Returns `true` if the frame was advanced, `false` if
   /// the animation reached its end.
   bool advance({required bool loop}) {
-    if (_status != PlaybackStatus.playing || _durationInFrames == 0) return false;
+    if (_status != PlaybackStatus.playing || _durationInFrames == 0) {
+      return false;
+    }
     if (_frame >= _durationInFrames - 1) {
       if (loop) {
         _frame = 0;
@@ -148,7 +150,8 @@ class LaminarController extends ChangeNotifier {
   }
 
   @override
-  String toString() => 'LaminarController(frame: $_frame/$_durationInFrames, status: $_status)';
+  String toString() =>
+      'LaminarController(frame: $_frame/$_durationInFrames, status: $_status)';
 }
 
 /// Playback status of a [LaminarController].

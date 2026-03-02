@@ -11,7 +11,10 @@ class LaminarExampleApp extends StatelessWidget {
       title: 'Laminar — Widget Showcase',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6C63FF), brightness: Brightness.dark),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF6C63FF),
+          brightness: Brightness.dark,
+        ),
         useMaterial3: true,
         fontFamily: 'Roboto',
         scaffoldBackgroundColor: const Color(0xFF0D0D12),

@@ -5,7 +5,6 @@ import 'slow_frame.dart';
 /// Equivalent to Remotion's `onProgress` callback payload, but surfaced as a
 /// Dart [Stream] for idiomatic usage.
 class RenderMediaProgress {
-
   const RenderMediaProgress({
     required this.renderedFrames,
     required this.totalFrames,
@@ -22,6 +21,7 @@ class RenderMediaProgress {
       progress: 0.0,
     );
   }
+
   /// Number of frames rendered so far.
   final int renderedFrames;
 

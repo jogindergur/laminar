@@ -45,7 +45,6 @@ import 'laminar_controller.dart';
 /// [Composition] fills its parent by default. Wrap it in a [SizedBox] or
 /// [AspectRatio] to constrain it — just like any other widget.
 class Composition<T> extends StatefulWidget {
-
   const Composition({
     super.key,
     required this.config,
@@ -161,7 +160,9 @@ class _CompositionState<T> extends State<Composition<T>> {
 
   void _startTicker() {
     if (_ticker != null) return; // already running
-    final interval = Duration(microseconds: (1000000 / widget.config.fps).round());
+    final interval = Duration(
+      microseconds: (1000000 / widget.config.fps).round(),
+    );
     _ticker = Timer.periodic(interval, (_) {
       if (!_ctrl.isPlaying) {
         _stopTicker();
@@ -191,12 +192,16 @@ class _CompositionState<T> extends State<Composition<T>> {
     // However, if the config didn't have defaultProps serialized, we serialize them here.
     // In many cases, we might want to just pass an already serialized props map, but
     // to keep the API similar, we can create a modified config.
-    final renderConfig = widget.config.copyWith(defaultProps: widget.serialize(widget.defaultProps));
+    final renderConfig = widget.config.copyWith(
+      defaultProps: widget.serialize(widget.defaultProps),
+    );
 
     return CompositionProvider(
       config: renderConfig,
       frame: _ctrl.frame,
-      child: Builder(builder: (ctx) => widget.component(ctx, widget.defaultProps)),
+      child: Builder(
+        builder: (ctx) => widget.component(ctx, widget.defaultProps),
+      ),
     );
   }
 }

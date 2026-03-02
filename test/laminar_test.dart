@@ -5,7 +5,13 @@ void main() {
   // ── VideoConfig ────────────────────────────────────────────────────────────
   group('VideoConfig', () {
     test('creates with required fields', () {
-      const config = VideoConfig(id: 'test', width: 1920, height: 1080, fps: 30, durationInFrames: 300);
+      const config = VideoConfig(
+        id: 'test',
+        width: 1920,
+        height: 1080,
+        fps: 30,
+        durationInFrames: 300,
+      );
       expect(config.id, 'test');
       expect(config.width, 1920);
       expect(config.height, 1080);
@@ -14,17 +20,35 @@ void main() {
     });
 
     test('computes durationInSeconds correctly', () {
-      const config = VideoConfig(id: 'test', width: 1920, height: 1080, fps: 30, durationInFrames: 300);
+      const config = VideoConfig(
+        id: 'test',
+        width: 1920,
+        height: 1080,
+        fps: 30,
+        durationInFrames: 300,
+      );
       expect(config.durationInSeconds, closeTo(10.0, 0.001));
     });
 
     test('computes aspectRatio correctly', () {
-      const config = VideoConfig(id: 'test', width: 1920, height: 1080, fps: 30, durationInFrames: 300);
+      const config = VideoConfig(
+        id: 'test',
+        width: 1920,
+        height: 1080,
+        fps: 30,
+        durationInFrames: 300,
+      );
       expect(config.aspectRatio, closeTo(16 / 9, 0.001));
     });
 
     test('copyWith overrides fields', () {
-      const base = VideoConfig(id: 'base', width: 1280, height: 720, fps: 24, durationInFrames: 120);
+      const base = VideoConfig(
+        id: 'base',
+        width: 1280,
+        height: 720,
+        fps: 24,
+        durationInFrames: 120,
+      );
       final copy = base.copyWith(id: 'copy', fps: 60);
       expect(copy.id, 'copy');
       expect(copy.fps, 60);
@@ -91,12 +115,22 @@ void main() {
     });
 
     test('clamp extrapolation on right', () {
-      final result = interpolate(60, [0, 30], [0.0, 1.0], extrapolateRight: Extrapolate.clamp);
+      final result = interpolate(
+        60,
+        [0, 30],
+        [0.0, 1.0],
+        extrapolateRight: Extrapolate.clamp,
+      );
       expect(result, closeTo(1.0, 0.001));
     });
 
     test('clamp extrapolation on left', () {
-      final result = interpolate(-10, [0, 30], [0.0, 1.0], extrapolateLeft: Extrapolate.clamp);
+      final result = interpolate(
+        -10,
+        [0, 30],
+        [0.0, 1.0],
+        extrapolateLeft: Extrapolate.clamp,
+      );
       expect(result, closeTo(0.0, 0.001));
     });
 
@@ -153,7 +187,13 @@ void main() {
 
   // ── RenderMediaOptions ────────────────────────────────────────────────────
   group('RenderMediaOptions', () {
-    const baseConfig = VideoConfig(id: 'opts-test', width: 1280, height: 720, fps: 30, durationInFrames: 60);
+    const baseConfig = VideoConfig(
+      id: 'opts-test',
+      width: 1280,
+      height: 720,
+      fps: 30,
+      durationInFrames: 60,
+    );
 
     test('effectiveFrameRange covers full composition by default', () {
       const opts = RenderMediaOptions(composition: baseConfig);
@@ -163,7 +203,10 @@ void main() {
     });
 
     test('effectiveFrameRange respects explicit frameRange', () {
-      const opts = RenderMediaOptions(composition: baseConfig, frameRange: FrameRange(start: 10, end: 29));
+      const opts = RenderMediaOptions(
+        composition: baseConfig,
+        frameRange: FrameRange(start: 10, end: 29),
+      );
       expect(opts.effectiveFrameRange.length, 20);
     });
 

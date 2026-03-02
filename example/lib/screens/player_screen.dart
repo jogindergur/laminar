@@ -52,7 +52,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
             Container(
               width: 10,
               height: 10,
-              decoration: BoxDecoration(color: e.accent, shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: e.accent,
+                shape: BoxShape.circle,
+              ),
             ),
             const SizedBox(width: 10),
             Text(e.title),
@@ -103,8 +106,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       activeTrackColor: e.accent,
                       inactiveTrackColor: Colors.white12,
                       thumbColor: Colors.white,
-                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
-                      overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                      thumbShape: const RoundSliderThumbShape(
+                        enabledThumbRadius: 7,
+                      ),
+                      overlayShape: const RoundSliderOverlayShape(
+                        overlayRadius: 14,
+                      ),
                       trackHeight: 3,
                     ),
                     child: Slider(
@@ -119,31 +126,52 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      _IconBtn(icon: Icons.stop_rounded, onTap: _ctrl.stop, color: Colors.white38),
+                      _IconBtn(
+                        icon: Icons.stop_rounded,
+                        onTap: _ctrl.stop,
+                        color: Colors.white38,
+                      ),
                       const SizedBox(width: 6),
-                      _IconBtn(icon: Icons.skip_previous_rounded, onTap: _ctrl.stepBack, color: Colors.white38),
+                      _IconBtn(
+                        icon: Icons.skip_previous_rounded,
+                        onTap: _ctrl.stepBack,
+                        color: Colors.white38,
+                      ),
                       const SizedBox(width: 6),
                       GestureDetector(
                         onTap: _ctrl.toggle,
                         child: Container(
                           width: 42,
                           height: 42,
-                          decoration: BoxDecoration(color: e.accent, borderRadius: BorderRadius.circular(21)),
+                          decoration: BoxDecoration(
+                            color: e.accent,
+                            borderRadius: BorderRadius.circular(21),
+                          ),
                           child: Icon(
-                            _ctrl.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                            _ctrl.isPlaying
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
                             color: Colors.white,
                             size: 22,
                           ),
                         ),
                       ),
                       const SizedBox(width: 6),
-                      _IconBtn(icon: Icons.skip_next_rounded, onTap: _ctrl.stepForward, color: Colors.white38),
+                      _IconBtn(
+                        icon: Icons.skip_next_rounded,
+                        onTap: _ctrl.stepForward,
+                        color: Colors.white38,
+                      ),
                       const SizedBox(width: 12),
                       Text(
                         '${timeSec.toStringAsFixed(2)}s  •  '
                         'F${_ctrl.frame.toString().padLeft(4, '0')}  •  '
                         '${_ctrl.status.name.toUpperCase()}',
-                        style: const TextStyle(color: Colors.white54, fontSize: 12, fontFamily: 'monospace'),
+                        style: const TextStyle(
+                          color: Colors.white54,
+                          fontSize: 12,
+                          fontFamily: 'monospace',
+                        ),
                       ),
                     ],
                   ),
@@ -164,7 +192,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 _div(),
                 _stat('status', _ctrl.status.name),
                 _div(),
-                _stat('progress', '${(_ctrl.progress * 100).toStringAsFixed(1)}%'),
+                _stat(
+                  'progress',
+                  '${(_ctrl.progress * 100).toStringAsFixed(1)}%',
+                ),
                 _div(),
                 _stat('fps', e.fps.toString()),
                 _div(),
@@ -198,19 +229,31 @@ class _PlayerScreenState extends State<PlayerScreen> {
           ),
           TextSpan(
             text: value,
-            style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+              color: Colors.white70,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _div() =>
-      Container(width: 1, height: 14, color: Colors.white12, margin: const EdgeInsets.symmetric(horizontal: 12));
+  Widget _div() => Container(
+    width: 1,
+    height: 14,
+    color: Colors.white12,
+    margin: const EdgeInsets.symmetric(horizontal: 12),
+  );
 }
 
 class _IconBtn extends StatelessWidget {
-  const _IconBtn({required this.icon, required this.onTap, required this.color});
+  const _IconBtn({
+    required this.icon,
+    required this.onTap,
+    required this.color,
+  });
   final IconData icon;
   final VoidCallback onTap;
   final Color color;
@@ -222,7 +265,10 @@ class _IconBtn extends StatelessWidget {
       child: Container(
         width: 34,
         height: 34,
-        decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(17)),
+        decoration: BoxDecoration(
+          color: Colors.white10,
+          borderRadius: BorderRadius.circular(17),
+        ),
         child: Icon(icon, color: color, size: 18),
       ),
     );

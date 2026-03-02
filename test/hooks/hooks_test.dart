@@ -7,9 +7,17 @@ import 'package:laminar/src/models/video_config.dart';
 
 void main() {
   group('Hooks', () {
-    const config = VideoConfig(id: 'hook_test', width: 1920, height: 1080, fps: 30, durationInFrames: 60);
+    const config = VideoConfig(
+      id: 'hook_test',
+      width: 1920,
+      height: 1080,
+      fps: 30,
+      durationInFrames: 60,
+    );
 
-    testWidgets('useCurrentFrame returns the correct frame from context', (tester) async {
+    testWidgets('useCurrentFrame returns the correct frame from context', (
+      tester,
+    ) async {
       int? retrievedFrame;
 
       await tester.pumpWidget(
@@ -31,7 +39,9 @@ void main() {
       expect(retrievedFrame, 42);
     });
 
-    testWidgets('useVideoConfig returns the correct config from context', (tester) async {
+    testWidgets('useVideoConfig returns the correct config from context', (
+      tester,
+    ) async {
       VideoConfig? retrievedConfig;
 
       await tester.pumpWidget(
@@ -53,7 +63,9 @@ void main() {
       expect(retrievedConfig, config);
     });
 
-    testWidgets('hooks throw explicit error when outside CompositionProvider', (tester) async {
+    testWidgets('hooks throw explicit error when outside CompositionProvider', (
+      tester,
+    ) async {
       FlutterErrorDetails? errorDetailsConfig;
       FlutterErrorDetails? errorDetailsFrame;
 
@@ -77,10 +89,16 @@ void main() {
       );
 
       expect(errorDetailsConfig, isNotNull);
-      expect(errorDetailsConfig!.exception.toString(), contains('No CompositionProvider found'));
+      expect(
+        errorDetailsConfig!.exception.toString(),
+        contains('No CompositionProvider found'),
+      );
 
       expect(errorDetailsFrame, isNotNull);
-      expect(errorDetailsFrame!.exception.toString(), contains('No CompositionProvider found'));
+      expect(
+        errorDetailsFrame!.exception.toString(),
+        contains('No CompositionProvider found'),
+      );
     });
   });
 }

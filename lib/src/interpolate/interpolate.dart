@@ -33,10 +33,14 @@ double interpolate(
   Extrapolate extrapolateLeft = Extrapolate.extend,
   Extrapolate extrapolateRight = Extrapolate.extend,
 }) {
-  assert(inputRange.length == outputRange.length,
-      'inputRange and outputRange must have the same length');
-  assert(inputRange.length >= 2,
-      'inputRange and outputRange must have at least 2 elements');
+  assert(
+    inputRange.length == outputRange.length,
+    'inputRange and outputRange must have the same length',
+  );
+  assert(
+    inputRange.length >= 2,
+    'inputRange and outputRange must have at least 2 elements',
+  );
 
   final double x = frame.toDouble();
 

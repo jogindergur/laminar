@@ -4,7 +4,13 @@ import 'package:laminar/laminar.dart';
 
 void main() {
   group('CompositionProvider', () {
-    const config = VideoConfig(id: 'test_config', width: 1920, height: 1080, fps: 30, durationInFrames: 60);
+    const config = VideoConfig(
+      id: 'test_config',
+      width: 1920,
+      height: 1080,
+      fps: 30,
+      durationInFrames: 60,
+    );
 
     testWidgets('provides config and frame to descendants', (tester) async {
       int? retrievedFrame;
@@ -28,7 +34,9 @@ void main() {
       expect(retrievedConfig?.id, 'test_config');
     });
 
-    testWidgets('throws meaningful error if provider is missing', (tester) async {
+    testWidgets('throws meaningful error if provider is missing', (
+      tester,
+    ) async {
       FlutterErrorDetails? errorDetails;
       FlutterError.onError = (details) {
         errorDetails = details;
@@ -44,11 +52,18 @@ void main() {
       );
 
       expect(errorDetails, isNotNull);
-      expect(errorDetails!.exception.toString(), contains('No CompositionProvider found'));
+      expect(
+        errorDetails!.exception.toString(),
+        contains('No CompositionProvider found'),
+      );
     });
 
     test('withFrame creates a copy with updated frame', () {
-      const provider = CompositionProvider(config: config, frame: 10, child: SizedBox());
+      const provider = CompositionProvider(
+        config: config,
+        frame: 10,
+        child: SizedBox(),
+      );
 
       final updated = provider.withFrame(20);
       expect(updated.frame, 20);

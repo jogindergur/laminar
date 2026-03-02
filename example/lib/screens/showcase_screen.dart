@@ -70,10 +70,16 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: [Color(0xFF6C63FF), Color(0xFFFF6584)]),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF6C63FF), Color(0xFFFF6584)],
+                ),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: const Icon(Icons.widgets_rounded, color: Colors.white, size: 14),
+              child: const Icon(
+                Icons.widgets_rounded,
+                color: Colors.white,
+                size: 14,
+              ),
             ),
             const SizedBox(width: 10),
             const Text('Showcase'),
@@ -81,7 +87,9 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
         ),
         actions: [
           TextButton.icon(
-            onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const GalleryScreen())),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const GalleryScreen()),
+            ),
             icon: const Icon(Icons.grid_view_rounded, size: 15),
             label: const Text('Gallery'),
             style: TextButton.styleFrom(foregroundColor: Colors.white54),
@@ -107,7 +115,13 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFF6C63FF),
             aspectRatio: 16 / 9,
             ctrl: _heroCtrl,
-            config: const VideoConfig(id: 'hero-banner', width: 1920, height: 1080, fps: 30, durationInFrames: 90),
+            config: const VideoConfig(
+              id: 'hero-banner',
+              width: 1920,
+              height: 1080,
+              fps: 30,
+              durationInFrames: 90,
+            ),
             child: const FadeTitleComposition(),
           ),
 
@@ -120,7 +134,13 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFFFF6584),
             aspectRatio: 1,
             ctrl: _waveCtrl,
-            config: const VideoConfig(id: 'wave', width: 600, height: 600, fps: 30, durationInFrames: 90),
+            config: const VideoConfig(
+              id: 'wave',
+              width: 600,
+              height: 600,
+              fps: 30,
+              durationInFrames: 90,
+            ),
             child: const WaveComposition(),
           ),
 
@@ -133,7 +153,13 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFFE0E0E0),
             aspectRatio: 16 / 9,
             ctrl: _appleCtrl,
-            config: const VideoConfig(id: 'apple-logo', width: 1920, height: 1080, fps: 30, durationInFrames: 150),
+            config: const VideoConfig(
+              id: 'apple-logo',
+              width: 1920,
+              height: 1080,
+              fps: 30,
+              durationInFrames: 150,
+            ),
             child: const AppleLogoComposition(),
           ),
 
@@ -159,18 +185,31 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFF00A862),
             aspectRatio: 16 / 9,
             ctrl: _starbucksCtrl,
-            config: const VideoConfig(id: 'starbucks-logo', width: 1920, height: 1080, fps: 30, durationInFrames: 150),
+            config: const VideoConfig(
+              id: 'starbucks-logo',
+              width: 1920,
+              height: 1080,
+              fps: 30,
+              durationInFrames: 150,
+            ),
             child: const StarbucksLogoComposition(),
           ),
 
           // ── Olympic Rings ──────────────────────────────────────────────────
           _DualRow(
             label: '🏅 Olympic Rings',
-            sub: 'OlympicLogoComposition · 16:9 · 150f @ 30fps — rings draw themselves',
+            sub:
+                'OlympicLogoComposition · 16:9 · 150f @ 30fps — rings draw themselves',
             accent: const Color(0xFF0085C7),
             aspectRatio: 16 / 9,
             ctrl: _olympicCtrl,
-            config: const VideoConfig(id: 'olympic-rings', width: 1920, height: 1080, fps: 30, durationInFrames: 150),
+            config: const VideoConfig(
+              id: 'olympic-rings',
+              width: 1920,
+              height: 1080,
+              fps: 30,
+              durationInFrames: 150,
+            ),
             child: const OlympicLogoComposition(),
           ),
 
@@ -179,11 +218,18 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
           // ── Trend Line Chart ───────────────────────────────────────────────
           _DualRow(
             label: '📈 Trend Line Chart',
-            sub: 'TrendChartComposition · 16:9 · 150f @ 30fps — multi-series animated chart',
+            sub:
+                'TrendChartComposition · 16:9 · 150f @ 30fps — multi-series animated chart',
             accent: const Color(0xFF6C63FF),
             aspectRatio: 16 / 9,
             ctrl: _trendCtrl,
-            config: const VideoConfig(id: 'trend-chart', width: 1920, height: 1080, fps: 30, durationInFrames: 150),
+            config: const VideoConfig(
+              id: 'trend-chart',
+              width: 1920,
+              height: 1080,
+              fps: 30,
+              durationInFrames: 150,
+            ),
             child: const TrendChartComposition(),
           ),
 
@@ -196,7 +242,13 @@ class _ShowcaseScreenState extends State<ShowcaseScreen> {
             accent: const Color(0xFF00C9A7),
             aspectRatio: 1,
             ctrl: _counterCtrl,
-            config: const VideoConfig(id: 'counter', width: 600, height: 600, fps: 30, durationInFrames: 120),
+            config: const VideoConfig(
+              id: 'counter',
+              width: 600,
+              height: 600,
+              fps: 30,
+              durationInFrames: 120,
+            ),
             child: const CounterComposition(),
           ),
 
@@ -217,9 +269,21 @@ class _ColumnHeaders extends StatelessWidget {
         if (constraints.maxWidth > 600) {
           return const Row(
             children: [
-              Expanded(child: _HeaderChip('Without Player', Colors.white24, Icons.block)),
+              Expanded(
+                child: _HeaderChip(
+                  'Without Player',
+                  Colors.white24,
+                  Icons.block,
+                ),
+              ),
               SizedBox(width: 14),
-              Expanded(child: _HeaderChip('With Player', Color(0xFF6C63FF), Icons.play_circle_outline_rounded)),
+              Expanded(
+                child: _HeaderChip(
+                  'With Player',
+                  Color(0xFF6C63FF),
+                  Icons.play_circle_outline_rounded,
+                ),
+              ),
             ],
           );
         } else {
@@ -228,7 +292,11 @@ class _ColumnHeaders extends StatelessWidget {
             children: [
               _HeaderChip('Without Player', Colors.white24, Icons.block),
               SizedBox(height: 10),
-              _HeaderChip('With Player', Color(0xFF6C63FF), Icons.play_circle_outline_rounded),
+              _HeaderChip(
+                'With Player',
+                Color(0xFF6C63FF),
+                Icons.play_circle_outline_rounded,
+              ),
             ],
           );
         }
@@ -259,7 +327,11 @@ class _HeaderChip extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w600),
+            style: TextStyle(
+              color: color,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
@@ -317,7 +389,12 @@ class _DualRow extends StatelessWidget {
         // Section label
         Text(
           label,
-          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700, letterSpacing: -0.3),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.3,
+          ),
         ),
         const SizedBox(height: 2),
         Text(sub, style: const TextStyle(color: Colors.white38, fontSize: 11)),
@@ -332,14 +409,22 @@ class _DualRow extends StatelessWidget {
                 children: [
                   // LEFT — bare widget, no chrome
                   Expanded(
-                    child: _BarePane(aspectRatio: aspectRatio, composition: comp),
+                    child: _BarePane(
+                      aspectRatio: aspectRatio,
+                      composition: comp,
+                    ),
                   ),
 
                   const SizedBox(width: 14),
 
                   // RIGHT — player card with controls
                   Expanded(
-                    child: _PlayerPane(accent: accent, aspectRatio: aspectRatio, ctrl: ctrl, composition: compPlayer),
+                    child: _PlayerPane(
+                      accent: accent,
+                      aspectRatio: aspectRatio,
+                      ctrl: ctrl,
+                      composition: compPlayer,
+                    ),
                   ),
                 ],
               );
@@ -353,7 +438,12 @@ class _DualRow extends StatelessWidget {
                   const SizedBox(height: 20),
 
                   // BOTTOM — player card with controls
-                  _PlayerPane(accent: accent, aspectRatio: aspectRatio, ctrl: ctrl, composition: compPlayer),
+                  _PlayerPane(
+                    accent: accent,
+                    aspectRatio: aspectRatio,
+                    ctrl: ctrl,
+                    composition: compPlayer,
+                  ),
                 ],
               );
             }
@@ -388,7 +478,12 @@ class _BarePane extends StatelessWidget {
             SizedBox(width: 5),
             Text(
               'Without Player, working as standalone widget.',
-              style: TextStyle(color: Colors.white30, fontSize: 10, fontWeight: FontWeight.w500, letterSpacing: 0.4),
+              style: TextStyle(
+                color: Colors.white30,
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.4,
+              ),
             ),
           ],
         ),
@@ -400,7 +495,12 @@ class _BarePane extends StatelessWidget {
 // ── Player pane (right) ───────────────────────────────────────────────────────
 
 class _PlayerPane extends StatefulWidget {
-  const _PlayerPane({required this.aspectRatio, required this.accent, required this.ctrl, required this.composition});
+  const _PlayerPane({
+    required this.aspectRatio,
+    required this.accent,
+    required this.ctrl,
+    required this.composition,
+  });
   final double aspectRatio;
   final Color accent;
   final LaminarController ctrl;
@@ -446,7 +546,10 @@ class _PlayerPaneState extends State<_PlayerPane> {
           // Composition viewport
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(11)),
-            child: AspectRatio(aspectRatio: widget.aspectRatio, child: widget.composition),
+            child: AspectRatio(
+              aspectRatio: widget.aspectRatio,
+              child: widget.composition,
+            ),
           ),
 
           // Controls
@@ -462,10 +565,18 @@ class _PlayerPaneState extends State<_PlayerPane> {
                 Row(
                   children: [
                     // Rewind to start
-                    _TBtn(icon: Icons.skip_previous_rounded, onTap: ctrl.stop, color: Colors.white30),
+                    _TBtn(
+                      icon: Icons.skip_previous_rounded,
+                      onTap: ctrl.stop,
+                      color: Colors.white30,
+                    ),
                     const SizedBox(width: 4),
                     // Step back
-                    _TBtn(icon: Icons.navigate_before_rounded, onTap: ctrl.stepBack, color: Colors.white30),
+                    _TBtn(
+                      icon: Icons.navigate_before_rounded,
+                      onTap: ctrl.stepBack,
+                      color: Colors.white30,
+                    ),
                     const SizedBox(width: 4),
                     // Play / Pause
                     GestureDetector(
@@ -473,9 +584,14 @@ class _PlayerPaneState extends State<_PlayerPane> {
                       child: Container(
                         width: 30,
                         height: 30,
-                        decoration: BoxDecoration(color: accent, borderRadius: BorderRadius.circular(15)),
+                        decoration: BoxDecoration(
+                          color: accent,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
                         child: Icon(
-                          ctrl.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                          ctrl.isPlaying
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
                           color: Colors.white,
                           size: 16,
                         ),
@@ -483,12 +599,20 @@ class _PlayerPaneState extends State<_PlayerPane> {
                     ),
                     const SizedBox(width: 4),
                     // Step forward
-                    _TBtn(icon: Icons.navigate_next_rounded, onTap: ctrl.stepForward, color: Colors.white30),
+                    _TBtn(
+                      icon: Icons.navigate_next_rounded,
+                      onTap: ctrl.stepForward,
+                      color: Colors.white30,
+                    ),
                     const Spacer(),
                     // Frame counter
                     Text(
                       'F${ctrl.frame.toString().padLeft(3, '0')}/${ctrl.durationInFrames}',
-                      style: const TextStyle(color: Colors.white38, fontSize: 10, fontFamily: 'monospace'),
+                      style: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 10,
+                        fontFamily: 'monospace',
+                      ),
                     ),
                   ],
                 ),
@@ -515,20 +639,36 @@ class _SeekBar extends StatelessWidget {
         return GestureDetector(
           onTapDown: (d) {
             final frac = d.localPosition.dx / constraints.maxWidth;
-            ctrl.seekTo((frac * (ctrl.durationInFrames - 1)).round().clamp(0, ctrl.durationInFrames - 1));
+            ctrl.seekTo(
+              (frac * (ctrl.durationInFrames - 1)).round().clamp(
+                0,
+                ctrl.durationInFrames - 1,
+              ),
+            );
           },
           onHorizontalDragUpdate: (d) {
             final frac = d.localPosition.dx / constraints.maxWidth;
-            ctrl.seekTo((frac * (ctrl.durationInFrames - 1)).round().clamp(0, ctrl.durationInFrames - 1));
+            ctrl.seekTo(
+              (frac * (ctrl.durationInFrames - 1)).round().clamp(
+                0,
+                ctrl.durationInFrames - 1,
+              ),
+            );
           },
           child: Container(
             height: 3,
-            decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(2)),
+            decoration: BoxDecoration(
+              color: Colors.white10,
+              borderRadius: BorderRadius.circular(2),
+            ),
             child: FractionallySizedBox(
               widthFactor: ctrl.progress,
               alignment: Alignment.centerLeft,
               child: Container(
-                decoration: BoxDecoration(color: accent, borderRadius: BorderRadius.circular(2)),
+                decoration: BoxDecoration(
+                  color: accent,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
           ),
@@ -551,7 +691,10 @@ class _TBtn extends StatelessWidget {
       child: Container(
         width: 26,
         height: 26,
-        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.07), borderRadius: BorderRadius.circular(13)),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.07),
+          borderRadius: BorderRadius.circular(13),
+        ),
         child: Icon(icon, color: color, size: 14),
       ),
     );

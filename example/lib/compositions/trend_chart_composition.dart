@@ -23,7 +23,12 @@ class ChartDataPoint {
 /// All series in a [ChartDataset] must have the **same number of data points**
 /// and the same labels (the labels are taken from the first series).
 class ChartSeries {
-  const ChartSeries({required this.name, required this.color, required this.dataPoints, this.glowColor});
+  const ChartSeries({
+    required this.name,
+    required this.color,
+    required this.dataPoints,
+    this.glowColor,
+  });
   final String name;
   final Color color;
 
@@ -37,7 +42,12 @@ class ChartSeries {
 
 /// Top-level dataset handed to [TrendChartComposition].
 class ChartDataset {
-  const ChartDataset({required this.title, required this.series, this.unit = '', this.prefix = ''});
+  const ChartDataset({
+    required this.title,
+    required this.series,
+    this.unit = '',
+    this.prefix = '',
+  });
 
   /// Chart title shown in the top-left corner.
   final String title;
@@ -51,7 +61,9 @@ class ChartDataset {
   final List<ChartSeries> series;
 
   /// X-axis labels derived from the first series.
-  List<String> get labels => series.isEmpty ? [] : series.first.dataPoints.map((p) => p.label).toList();
+  List<String> get labels => series.isEmpty
+      ? []
+      : series.first.dataPoints.map((p) => p.label).toList();
 }
 
 // ╔══════════════════════════════════════════════════════════════════════════╗
@@ -248,7 +260,9 @@ class TrendChartComposition extends StatelessWidget {
                             child: Wrap(
                               spacing: 16,
                               runSpacing: 8,
-                              children: dataset.series.map((s) => _LegendDot(series: s)).toList(),
+                              children: dataset.series
+                                  .map((s) => _LegendDot(series: s))
+                                  .toList(),
                             ),
                           ),
                         ],
@@ -288,7 +302,11 @@ class TrendChartComposition extends StatelessWidget {
             opacity: gridOpacity * 0.4,
             child: Text(
               'frame $frame · interpolate() + CustomPaint',
-              style: const TextStyle(color: Colors.white54, fontSize: 9, letterSpacing: 0.5),
+              style: const TextStyle(
+                color: Colors.white54,
+                fontSize: 9,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
         ),
@@ -316,13 +334,22 @@ class _LegendDot extends StatelessWidget {
           decoration: BoxDecoration(
             color: series.color,
             shape: BoxShape.circle,
-            boxShadow: [BoxShadow(color: series.color.withValues(alpha: 0.6), blurRadius: 6)],
+            boxShadow: [
+              BoxShadow(
+                color: series.color.withValues(alpha: 0.6),
+                blurRadius: 6,
+              ),
+            ],
           ),
         ),
         const SizedBox(width: 5),
         Text(
           series.name,
-          style: TextStyle(color: series.color.withValues(alpha: 0.85), fontSize: 11, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            color: series.color.withValues(alpha: 0.85),
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ],
     );
@@ -342,7 +369,10 @@ class _AmbientGlowPainter extends CustomPainter {
         ..shader = RadialGradient(
           center: const Alignment(0.4, -0.2),
           radius: 0.8,
-          colors: [const Color(0xFF6C63FF).withValues(alpha: 0.06), Colors.transparent],
+          colors: [
+            const Color(0xFF6C63FF).withValues(alpha: 0.06),
+            Colors.transparent,
+          ],
         ).createShader(Rect.fromLTWH(0, 0, size.width, size.height)),
     );
   }
@@ -410,7 +440,18 @@ class _TrendChartPainter extends CustomPainter {
     }
 
     // ── Grid + axes ───────────────────────────────────────────────────────
-    _drawGrid(canvas, size, leftPad, chartW, topPad, chartH, bottomPad, minV, maxV, isMobile);
+    _drawGrid(
+      canvas,
+      size,
+      leftPad,
+      chartW,
+      topPad,
+      chartH,
+      bottomPad,
+      minV,
+      maxV,
+      isMobile,
+    );
     _drawXLabels(canvas, labels, leftPad, chartW, topPad, chartH, isMobile);
 
     // ── Area fills (drawn below lines) ────────────────────────────────────
@@ -456,7 +497,11 @@ class _TrendChartPainter extends CustomPainter {
 
     for (int g = 0; g <= gridCount; g++) {
       final y = topPad + (g / gridCount) * chartH;
-      canvas.drawLine(Offset(leftPad, y), Offset(leftPad + chartW, y), gridPaint);
+      canvas.drawLine(
+        Offset(leftPad, y),
+        Offset(leftPad + chartW, y),
+        gridPaint,
+      );
 
       final val = maxV - (g / gridCount) * (maxV - minV);
       final label = '${dataset.prefix}${val.toStringAsFixed(0)}${dataset.unit}';
@@ -468,7 +513,11 @@ class _TrendChartPainter extends CustomPainter {
         canvas,
         label,
         Offset(labelOffset, y - 6),
-        TextStyle(color: const Color(0xFF5A5A7A), fontSize: isMobile ? 8 : 10, fontWeight: FontWeight.w500),
+        TextStyle(
+          color: const Color(0xFF5A5A7A),
+          fontSize: isMobile ? 8 : 10,
+          fontWeight: FontWeight.w500,
+        ),
         width: labelWidth,
         align: TextAlign.right,
       );
@@ -490,7 +539,11 @@ class _TrendChartPainter extends CustomPainter {
         canvas,
         labels[i],
         Offset(x - 20, topPad + chartH + (isMobile ? 4 : 8)),
-        TextStyle(color: const Color(0xFF5A5A7A), fontSize: isMobile ? 8 : 10, fontWeight: FontWeight.w500),
+        TextStyle(
+          color: const Color(0xFF5A5A7A),
+          fontSize: isMobile ? 8 : 10,
+          fontWeight: FontWeight.w500,
+        ),
         width: 40,
         align: TextAlign.center,
       );
@@ -501,7 +554,11 @@ class _TrendChartPainter extends CustomPainter {
 
   /// Clips series data to [lineProgress] and computes the list of visible
   /// canvas points, including a fractionally interpolated trailing point.
-  List<Offset> _visiblePoints(ChartSeries s, Offset Function(int, double) pt, int count) {
+  List<Offset> _visiblePoints(
+    ChartSeries s,
+    Offset Function(int, double) pt,
+    int count,
+  ) {
     final visibleFrac = lineProgress * (count - 1);
     final fullPts = visibleFrac.floor().clamp(0, count - 1);
     final partialFrac = visibleFrac - fullPts;
@@ -554,7 +611,12 @@ class _TrendChartPainter extends CustomPainter {
     );
   }
 
-  void _drawSeries(Canvas canvas, ChartSeries s, Offset Function(int, double) pt, int count) {
+  void _drawSeries(
+    Canvas canvas,
+    ChartSeries s,
+    Offset Function(int, double) pt,
+    int count,
+  ) {
     final pts = _visiblePoints(s, pt, count);
     if (pts.length < 2) return;
 
@@ -632,8 +694,14 @@ class _TrendChartPainter extends CustomPainter {
       final p2 = pts[i + 1];
       final p3 = i + 2 < pts.length ? pts[i + 2] : p2;
 
-      final cp1 = Offset(p1.dx + (p2.dx - p0.dx) / 6, p1.dy + (p2.dy - p0.dy) / 6);
-      final cp2 = Offset(p2.dx - (p3.dx - p1.dx) / 6, p2.dy - (p3.dy - p1.dy) / 6);
+      final cp1 = Offset(
+        p1.dx + (p2.dx - p0.dx) / 6,
+        p1.dy + (p2.dy - p0.dy) / 6,
+      );
+      final cp2 = Offset(
+        p2.dx - (p3.dx - p1.dx) / 6,
+        p2.dy - (p3.dy - p1.dy) / 6,
+      );
 
       path.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, p2.dx, p2.dy);
     }

@@ -7,7 +7,6 @@ import 'video_config.dart';
 /// Mirrors Remotion's `RenderMediaOptions` TypeScript type, mapped to idiomatic
 /// Dart nominal types (no dynamic Zod schema injection).
 class RenderMediaOptions {
-
   const RenderMediaOptions({
     required this.composition,
     this.outputLocation,
@@ -18,6 +17,7 @@ class RenderMediaOptions {
     this.pixelFormat = 'yuv420p',
     this.slowFrameThresholdMs = 1000,
   });
+
   /// The [VideoConfig] of the composition to render.
   final VideoConfig composition;
 
@@ -52,7 +52,8 @@ class RenderMediaOptions {
   final int? slowFrameThresholdMs;
 
   /// The effective [FrameRange] — falls back to the full composition range.
-  FrameRange get effectiveFrameRange => frameRange ?? FrameRange(start: 0, end: composition.durationInFrames - 1);
+  FrameRange get effectiveFrameRange =>
+      frameRange ?? FrameRange(start: 0, end: composition.durationInFrames - 1);
 
   /// Returns a copy of these options with the given fields overridden.
   RenderMediaOptions copyWith({

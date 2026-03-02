@@ -18,7 +18,11 @@ void main() {
     );
 
     test('renders multiple frames and emits progress', () async {
-      const options = RenderMediaOptions(composition: config, outputLocation: '/tmp/output.mp4', concurrency: 2);
+      const options = RenderMediaOptions(
+        composition: config,
+        outputLocation: '/tmp/output.mp4',
+        concurrency: 2,
+      );
 
       final renderer = MediaRenderer(options: options);
 
@@ -26,7 +30,8 @@ void main() {
       renderer.onProgress.listen(progressEvents.add);
 
       final result = await renderer.render(
-        widgetFactory: (frame) => const SizedBox.expand(child: ColoredBox(color: Color(0xFF00FF00))),
+        widgetFactory: (frame) =>
+            const SizedBox.expand(child: ColoredBox(color: Color(0xFF00FF00))),
       );
 
       expect(result.totalFrames, 5);
@@ -51,7 +56,8 @@ void main() {
 
       final renderer = MediaRenderer(options: options);
       final result = await renderer.render(
-        widgetFactory: (frame) => const SizedBox.expand(child: ColoredBox(color: Color(0xFF00FF00))),
+        widgetFactory: (frame) =>
+            const SizedBox.expand(child: ColoredBox(color: Color(0xFF00FF00))),
       );
 
       expect(result.slowFrames.length, 1);

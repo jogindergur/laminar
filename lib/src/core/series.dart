@@ -4,11 +4,8 @@ import 'sequence.dart';
 
 /// A descriptor for a child within a [Series].
 class SeriesSequence {
+  const SeriesSequence({required this.durationInFrames, required this.child});
 
-  const SeriesSequence({
-    required this.durationInFrames,
-    required this.child,
-  });
   /// Duration in frames.
   final int durationInFrames;
 
@@ -32,7 +29,6 @@ class SeriesSequence {
 /// )
 /// ```
 class Series extends StatelessWidget {
-
   const Series({super.key, required this.sequences});
   final List<SeriesSequence> sequences;
 

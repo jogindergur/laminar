@@ -2,13 +2,13 @@ import 'slow_frame.dart';
 
 /// The result returned by [renderMedia] upon successful completion.
 class RenderMediaResult {
-
   const RenderMediaResult({
     this.outputPath,
     required this.durationMs,
     required this.totalFrames,
     this.slowFrames = const [],
   });
+
   /// Absolute path to the rendered output file.
   ///
   /// `null` if [RenderMediaOptions.outputLocation] was not set and the

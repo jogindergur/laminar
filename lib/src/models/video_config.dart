@@ -6,7 +6,6 @@ import 'codec.dart';
 /// It is propagated down the widget tree via [CompositionProvider] and
 /// accessed via [useVideoConfig].
 class VideoConfig {
-
   const VideoConfig({
     required this.id,
     required this.width,
@@ -15,10 +14,10 @@ class VideoConfig {
     required this.durationInFrames,
     this.defaultProps = const {},
     this.defaultCodec,
-  })  : assert(width > 0, 'width must be positive'),
-        assert(height > 0, 'height must be positive'),
-        assert(fps > 0, 'fps must be positive'),
-        assert(durationInFrames > 0, 'durationInFrames must be positive');
+  }) : assert(width > 0, 'width must be positive'),
+       assert(height > 0, 'height must be positive'),
+       assert(fps > 0, 'fps must be positive'),
+       assert(durationInFrames > 0, 'durationInFrames must be positive');
 
   /// Deserializes a [VideoConfig] from a JSON map.
   factory VideoConfig.fromJson(Map<String, dynamic> json) {
@@ -28,13 +27,13 @@ class VideoConfig {
       height: json['height'] as int,
       fps: json['fps'] as int,
       durationInFrames: json['durationInFrames'] as int,
-      defaultProps:
-          (json['defaultProps'] as Map<String, dynamic>?) ?? const {},
+      defaultProps: (json['defaultProps'] as Map<String, dynamic>?) ?? const {},
       defaultCodec: json['defaultCodec'] != null
           ? Codec.values.byName(json['defaultCodec'] as String)
           : null,
     );
   }
+
   /// Unique identifier for this composition (maps to the Remotion `id` prop).
   final String id;
 
@@ -89,14 +88,14 @@ class VideoConfig {
 
   /// Serializes this [VideoConfig] to a JSON map.
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'width': width,
-        'height': height,
-        'fps': fps,
-        'durationInFrames': durationInFrames,
-        'defaultProps': defaultProps,
-        if (defaultCodec != null) 'defaultCodec': defaultCodec!.name,
-      };
+    'id': id,
+    'width': width,
+    'height': height,
+    'fps': fps,
+    'durationInFrames': durationInFrames,
+    'defaultProps': defaultProps,
+    if (defaultCodec != null) 'defaultCodec': defaultCodec!.name,
+  };
 
   @override
   String toString() =>
@@ -113,6 +112,5 @@ class VideoConfig {
           other.durationInFrames == durationInFrames;
 
   @override
-  int get hashCode =>
-      Object.hash(id, width, height, fps, durationInFrames);
+  int get hashCode => Object.hash(id, width, height, fps, durationInFrames);
 }

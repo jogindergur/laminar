@@ -9,12 +9,20 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('FrameRenderer', () {
-    const config = VideoConfig(id: 'frame_test', width: 100, height: 100, fps: 30, durationInFrames: 60);
+    const config = VideoConfig(
+      id: 'frame_test',
+      width: 100,
+      height: 100,
+      fps: 30,
+      durationInFrames: 60,
+    );
 
     test('renders a simple widget into an image', () async {
       final image = await FrameRenderer.renderFrame(
         frame: 0,
-        widget: const SizedBox.expand(child: ColoredBox(color: Color(0xFFFF0000))), // Sized Red box
+        widget: const SizedBox.expand(
+          child: ColoredBox(color: Color(0xFFFF0000)),
+        ), // Sized Red box
         config: config,
       );
 
@@ -22,7 +30,9 @@ void main() {
       expect(image.height, 100);
 
       // Verify pixel color
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+      final byteData = await image.toByteData(
+        format: ui.ImageByteFormat.rawRgba,
+      );
       expect(byteData, isNotNull);
 
       // Center pixel should be red (RGBA: 255, 0, 0, 255)

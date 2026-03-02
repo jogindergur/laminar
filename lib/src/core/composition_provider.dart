@@ -12,13 +12,13 @@ import '../models/video_config.dart';
 /// [useVideoConfig] / [useCurrentFrame] helpers instead of accessing this
 /// widget directly.
 class CompositionProvider extends InheritedWidget {
-
   const CompositionProvider({
     super.key,
     required this.config,
     required this.frame,
     required super.child,
   });
+
   /// The active [VideoConfig] for this composition.
   final VideoConfig config;
 
@@ -33,8 +33,8 @@ class CompositionProvider extends InheritedWidget {
   /// actionable error message — similar to what Remotion does if you call
   /// `useVideoConfig()` outside a `<Composition>`.
   static CompositionProvider of(BuildContext context) {
-    final provider =
-        context.dependOnInheritedWidgetOfExactType<CompositionProvider>();
+    final provider = context
+        .dependOnInheritedWidgetOfExactType<CompositionProvider>();
     if (provider == null) {
       throw FlutterError.fromParts([
         ErrorSummary('No CompositionProvider found in widget tree.'),
@@ -67,9 +67,6 @@ class CompositionProvider extends InheritedWidget {
   /// same [config] and [child].
   ///
   /// Used internally by the renderer to advance the frame counter.
-  CompositionProvider withFrame(int newFrame) => CompositionProvider(
-        config: config,
-        frame: newFrame,
-        child: child,
-      );
+  CompositionProvider withFrame(int newFrame) =>
+      CompositionProvider(config: config, frame: newFrame, child: child);
 }

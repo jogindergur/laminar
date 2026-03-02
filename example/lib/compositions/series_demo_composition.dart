@@ -59,7 +59,10 @@ class _IntroScene extends StatelessWidget {
             child: Transform.translate(
               offset: Offset(0, slide),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 24,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -69,9 +72,16 @@ class _IntroScene extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: const Color(0xFFFFBE0B).withValues(alpha: 0.15),
                         shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFFFFBE0B).withValues(alpha: 0.5), width: 2),
+                        border: Border.all(
+                          color: const Color(0xFFFFBE0B).withValues(alpha: 0.5),
+                          width: 2,
+                        ),
                       ),
-                      child: const Icon(Icons.movie_filter_outlined, color: Color(0xFFFFBE0B), size: 28),
+                      child: const Icon(
+                        Icons.movie_filter_outlined,
+                        color: Color(0xFFFFBE0B),
+                        size: 28,
+                      ),
                     ),
                     const SizedBox(height: 18),
                     const Text(
@@ -86,12 +96,19 @@ class _IntroScene extends StatelessWidget {
                     const SizedBox(height: 8),
                     const Text(
                       'Introduction',
-                      style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w800),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 36,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       'frame $frame / 50  •  Scene 1 of 3',
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 13),
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.4),
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
@@ -147,7 +164,11 @@ class _MainScene extends StatelessWidget {
                 const SizedBox(height: 8),
                 const Text(
                   'Core Primitives',
-                  style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w800),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 ..._bullets.asMap().entries.map((entry) {
@@ -183,7 +204,10 @@ class _MainScene extends StatelessWidget {
                             Container(
                               width: 6,
                               height: 6,
-                              decoration: const BoxDecoration(color: Color(0xFF00C9A7), shape: BoxShape.circle),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF00C9A7),
+                                shape: BoxShape.circle,
+                              ),
                             ),
                             const SizedBox(width: 12),
                             Text(
@@ -198,7 +222,10 @@ class _MainScene extends StatelessWidget {
                             const SizedBox(width: 8),
                             Text(
                               '— $desc',
-                              style: TextStyle(color: Colors.white.withValues(alpha: 0.55), fontSize: 13),
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.55),
+                                fontSize: 13,
+                              ),
                             ),
                           ],
                         ),
@@ -209,7 +236,10 @@ class _MainScene extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   'frame $frame / 60  •  Scene 2 of 3',
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.3), fontSize: 11),
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    fontSize: 11,
+                  ),
                 ),
               ],
             ),
@@ -261,28 +291,43 @@ class _OutroScene extends StatelessWidget {
             child: Transform.scale(
               scale: scale,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 24,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ShaderMask(
                       blendMode: BlendMode.srcIn,
-                      shaderCallback: (bounds) =>
-                          const LinearGradient(colors: [Color(0xFF6C63FF), Color(0xFFFF6584)]).createShader(bounds),
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [Color(0xFF6C63FF), Color(0xFFFF6584)],
+                      ).createShader(bounds),
                       child: const Text(
                         'laminar',
-                        style: TextStyle(fontSize: 52, fontWeight: FontWeight.w900, letterSpacing: -2),
+                        style: TextStyle(
+                          fontSize: 52,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -2,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       'Programmatic video. Pure Flutter.',
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.55), fontSize: 15, letterSpacing: 0.3),
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.55),
+                        fontSize: 15,
+                        letterSpacing: 0.3,
+                      ),
                     ),
                     const SizedBox(height: 24),
                     Text(
                       'frame $frame / 40  •  Scene 3 of 3',
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.25), fontSize: 11),
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.25),
+                        fontSize: 11,
+                      ),
                     ),
                   ],
                 ),

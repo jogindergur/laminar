@@ -2,8 +2,8 @@
 ///
 /// Equivalent to Remotion's `SlowFrame` TypeScript interface.
 class SlowFrame {
-
   const SlowFrame({required this.frame, required this.timeMs});
+
   /// Zero-based frame index.
   final int frame;
 

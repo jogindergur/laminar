@@ -7,13 +7,21 @@ import 'package:laminar/src/models/video_config.dart';
 
 void main() {
   group('Composition Widget', () {
-    testWidgets('initializes internal controller and provides context', (tester) async {
+    testWidgets('initializes internal controller and provides context', (
+      tester,
+    ) async {
       int? builtFrame;
       await tester.pumpWidget(
         Directionality(
           textDirection: TextDirection.ltr,
           child: Composition<void>(
-            config: const VideoConfig(id: 'test_comp', width: 1920, height: 1080, fps: 30, durationInFrames: 60),
+            config: const VideoConfig(
+              id: 'test_comp',
+              width: 1920,
+              height: 1080,
+              fps: 30,
+              durationInFrames: 60,
+            ),
             defaultProps: null,
             serialize: (_) => {},
             component: (context, props) {
@@ -37,7 +45,13 @@ void main() {
         Directionality(
           textDirection: TextDirection.ltr,
           child: Composition<void>(
-            config: const VideoConfig(id: 'test_comp', width: 1920, height: 1080, fps: 30, durationInFrames: 60),
+            config: const VideoConfig(
+              id: 'test_comp',
+              width: 1920,
+              height: 1080,
+              fps: 30,
+              durationInFrames: 60,
+            ),
             defaultProps: null,
             serialize: (_) => {},
             controller: ctrl,
@@ -59,13 +73,21 @@ void main() {
       ctrl.dispose();
     });
 
-    testWidgets('autoPlay starts internal ticker automatically', (tester) async {
+    testWidgets('autoPlay starts internal ticker automatically', (
+      tester,
+    ) async {
       int builtFrame = -1;
       await tester.pumpWidget(
         Directionality(
           textDirection: TextDirection.ltr,
           child: Composition<void>(
-            config: const VideoConfig(id: 'test_comp', width: 1920, height: 1080, fps: 30, durationInFrames: 60),
+            config: const VideoConfig(
+              id: 'test_comp',
+              width: 1920,
+              height: 1080,
+              fps: 30,
+              durationInFrames: 60,
+            ),
             defaultProps: null,
             serialize: (_) => {},
             autoPlay: true,

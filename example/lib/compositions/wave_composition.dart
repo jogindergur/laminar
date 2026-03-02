@@ -40,7 +40,11 @@ class WaveComposition extends StatelessWidget {
         ),
         // Wave canvas
         CustomPaint(
-          painter: _WavePainter(frame: frame, amplitude: amplitude, totalFrames: config.durationInFrames),
+          painter: _WavePainter(
+            frame: frame,
+            amplitude: amplitude,
+            totalFrames: config.durationInFrames,
+          ),
         ),
         // Overlay text
         Positioned(
@@ -63,7 +67,10 @@ class WaveComposition extends StatelessWidget {
               Text(
                 'frame $frame / ${config.durationInFrames}',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white.withValues(alpha: 0.3), fontSize: 11),
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.3),
+                  fontSize: 11,
+                ),
               ),
             ],
           ),
@@ -74,8 +81,11 @@ class WaveComposition extends StatelessWidget {
 }
 
 class _WavePainter extends CustomPainter {
-
-  _WavePainter({required this.frame, required this.amplitude, required this.totalFrames});
+  _WavePainter({
+    required this.frame,
+    required this.amplitude,
+    required this.totalFrames,
+  });
   final int frame;
   final double amplitude;
   final int totalFrames;
@@ -106,7 +116,11 @@ class _WavePainter extends CustomPainter {
         final x = i.toDouble();
         final nx = x / size.width;
         final y =
-            cy + math.sin(nx * w.freq * 2 * math.pi + w.phase + t * 2 * math.pi) * size.height * w.amp * amplitude;
+            cy +
+            math.sin(nx * w.freq * 2 * math.pi + w.phase + t * 2 * math.pi) *
+                size.height *
+                w.amp *
+                amplitude;
 
         if (i == 0) {
           path.moveTo(x, y);
@@ -122,7 +136,11 @@ class _WavePainter extends CustomPainter {
     final barWidth = size.width / barCount;
     for (int i = 0; i < barCount; i++) {
       final barT = i / barCount;
-      final height = math.sin(barT * math.pi * 3 + t * math.pi * 4).abs() * size.height * 0.28 * amplitude;
+      final height =
+          math.sin(barT * math.pi * 3 + t * math.pi * 4).abs() *
+          size.height *
+          0.28 *
+          amplitude;
 
       final barPaint = Paint()
         ..color = const Color(0xFFFF6584).withValues(alpha: 0.45 * amplitude)
@@ -130,7 +148,12 @@ class _WavePainter extends CustomPainter {
 
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-          Rect.fromLTWH(i * barWidth + 1, size.height - height - 12, barWidth - 2, height),
+          Rect.fromLTWH(
+            i * barWidth + 1,
+            size.height - height - 12,
+            barWidth - 2,
+            height,
+          ),
           const Radius.circular(2),
         ),
         barPaint,
@@ -139,5 +162,6 @@ class _WavePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_WavePainter old) => old.frame != frame || old.amplitude != amplitude;
+  bool shouldRepaint(_WavePainter old) =>
+      old.frame != frame || old.amplitude != amplitude;
 }

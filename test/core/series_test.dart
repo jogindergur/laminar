@@ -6,20 +6,39 @@ import 'package:laminar/src/models/video_config.dart';
 
 void main() {
   group('Series Widget', () {
-    const config = VideoConfig(id: 'test_series', width: 1920, height: 1080, fps: 30, durationInFrames: 100);
+    const config = VideoConfig(
+      id: 'test_series',
+      width: 1920,
+      height: 1080,
+      fps: 30,
+      durationInFrames: 100,
+    );
 
     Widget buildSeriesEnv(int currentFrame, Series series) {
       return Directionality(
         textDirection: TextDirection.ltr,
-        child: CompositionProvider(config: config, frame: currentFrame, child: series),
+        child: CompositionProvider(
+          config: config,
+          frame: currentFrame,
+          child: series,
+        ),
       );
     }
 
     final seriesWidget = Series(
       sequences: [
-        SeriesSequence(durationInFrames: 30, child: Container(key: const Key('child1'))),
-        SeriesSequence(durationInFrames: 20, child: Container(key: const Key('child2'))),
-        SeriesSequence(durationInFrames: 50, child: Container(key: const Key('child3'))),
+        SeriesSequence(
+          durationInFrames: 30,
+          child: Container(key: const Key('child1')),
+        ),
+        SeriesSequence(
+          durationInFrames: 20,
+          child: Container(key: const Key('child2')),
+        ),
+        SeriesSequence(
+          durationInFrames: 50,
+          child: Container(key: const Key('child3')),
+        ),
       ],
     );
 

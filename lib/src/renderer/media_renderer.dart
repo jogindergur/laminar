@@ -27,11 +27,11 @@ import 'frame_renderer.dart';
 /// final result = await renderer.render();
 /// ```
 class MediaRenderer {
-
   MediaRenderer({required this.options});
   final RenderMediaOptions options;
 
-  final StreamController<RenderMediaProgress> _progressController = StreamController<RenderMediaProgress>.broadcast();
+  final StreamController<RenderMediaProgress> _progressController =
+      StreamController<RenderMediaProgress>.broadcast();
 
   /// A [Stream] of [RenderMediaProgress] events emitted during the render.
   ///
@@ -72,8 +72,11 @@ class MediaRenderer {
 
         frameWatch.stop();
 
-        if (options.slowFrameThresholdMs != null && frameWatch.elapsedMilliseconds > options.slowFrameThresholdMs!) {
-          slowFrames.add(SlowFrame(frame: frame, timeMs: frameWatch.elapsedMilliseconds));
+        if (options.slowFrameThresholdMs != null &&
+            frameWatch.elapsedMilliseconds > options.slowFrameThresholdMs!) {
+          slowFrames.add(
+            SlowFrame(frame: frame, timeMs: frameWatch.elapsedMilliseconds),
+          );
         }
         // Here we return the raw RGBA bytes as a placeholder.
         final bytes = await _imageToBytes(image);
@@ -86,7 +89,9 @@ class MediaRenderer {
 
       final progress = rendered / totalFrames;
       final elapsed = stopwatch.elapsedMilliseconds;
-      final estimated = progress > 0 ? ((elapsed / progress) * (1 - progress)).round() : null;
+      final estimated = progress > 0
+          ? ((elapsed / progress) * (1 - progress)).round()
+          : null;
 
       _progressController.add(
         RenderMediaProgress(
@@ -120,7 +125,9 @@ class MediaRenderer {
   List<List<T>> _chunk<T>(List<T> list, int size) {
     final chunks = <List<T>>[];
     for (int i = 0; i < list.length; i += size) {
-      chunks.add(list.sublist(i, (i + size) < list.length ? i + size : list.length));
+      chunks.add(
+        list.sublist(i, (i + size) < list.length ? i + size : list.length),
+      );
     }
     return chunks;
   }
