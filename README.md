@@ -2,24 +2,23 @@
 
 **A platform-independent Flutter library for programmatic video composition and rendering.**
 
-Laminar is the Dart/Flutter port of [Remotion](https://www.remotion.dev/). Instead of React + Puppeteer + Node.js, Laminar uses Flutter widgets and the Skia/Impeller canvas to compose and render frames — no browser, no Node process, pure Dart.
+Laminar is inspired by [Remotion].
 
 ---
 
 ## Features
 
-| Feature | Laminar | Remotion |
-|---|---|---|
-| Declarative scene composition | `Composition<T>` widget | `<Composition />` |
-| Frame-aware context | `CompositionProvider` (InheritedWidget) | React Context |
-| Current frame accessor | `useCurrentFrame(context)` | `useCurrentFrame()` |
-| Video metadata accessor | `useVideoConfig(context)` | `useVideoConfig()` |
-| Time-scoped child rendering | `Sequence` | `<Sequence />` |
-| Sequential scene layout | `Series` + `SeriesSequence` | `<Series />` |
-| Animation mapping | `interpolate()` | `interpolate()` |
-| Easing functions | `Easing.*` | `Easing.*` |
-| Progress events | `Stream<RenderMediaProgress>` | `onProgress` callback |
-| Renderer | `MediaRenderer` + `FrameRenderer` | `renderMedia()` |
+- **Declarative scene composition**: `Composition<T>` widget
+- **Playback control**: `LaminarController`
+- **Frame-aware context**: `CompositionProvider` (`InheritedWidget`)
+- **Current frame accessor**: `useCurrentFrame(context)`
+- **Video metadata accessor**: `useVideoConfig(context)`
+- **Time-scoped child rendering**: `Sequence`
+- **Sequential scene layout**: `Series` + `SeriesSequence`
+- **Animation mapping**: `interpolate()`
+- **Easing functions**: `Easing.*`
+- **Progress events**: `Stream<RenderMediaProgress>`
+- **Renderer**: `MediaRenderer` + `FrameRenderer`
 
 ---
 
@@ -115,7 +114,9 @@ Series(
 ```dart
 final options = RenderMediaOptions(
   composition: myConfig,
-  outputLocation: '/tmp/output.mp4',
+  // Note: Video encoding to .mp4 is not yet implemented.
+  // Laminar currently processes frames concurrently in memory.
+  outputLocation: '/tmp/output_directory',
   codec: Codec.h264,
   concurrency: 4,
 );
@@ -168,17 +169,6 @@ laminar/
 └── test/
     └── laminar_test.dart
 ```
-
-### Key Architectural Differences from Remotion
-
-| Concern | Remotion (Node/React) | Laminar (Dart/Flutter) |
-|---|---|---|
-| Frame rasterisation | Puppeteer (headless Chromium) | `RenderRepaintBoundary` + Skia |
-| Concurrency | `Promise.all` (event loop) | `Isolate.run` (true parallelism) |
-| Prop schemas | Zod (runtime) | Nominal classes + `toJson()` |
-| Context injection | React Context / Hooks | `InheritedWidget` |
-| Progress reporting | `onProgress` callback | `Stream<RenderMediaProgress>` |
-| FFmpeg piping | Node `child_process` | Dart `Process.start()` |
 
 ---
 
